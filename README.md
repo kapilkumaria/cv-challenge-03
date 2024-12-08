@@ -100,5 +100,8 @@ Submit your work via the **GitHub repository link**, including:
 2. Terraform and Ansible configurations.  
 3. Screenshots of successful execution for all pipelines.  
 4. A **detailed blog post** documenting your process, including an **architectural diagram**.  
+Here’s the updated README file with the link hidden behind text:  
 
-⏰ **Deadline:** Submit on or before **loading...**.  
+---
+
+⏰ **Deadline:** Submit on or before **Tuesday 11:59 PM**. [Submit Here](https://forms.gle/5UYV1usjnEJ1saS56).  
