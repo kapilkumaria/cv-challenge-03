@@ -17,7 +17,11 @@ key_name                = "devops1"               # Replace with your SSH key pa
 #key_name = "my-ec2-keypair"
 key_path = "~/devops1.pem"
 instance_count          = 1                     # Example: 2 instances for the dev environment
-user_data               = <<-EOT
+#user_data               = <<-EOT
+#!/bin/bash
+#echo "Hello, Dev Environment!" > /var/www/html/index.html
+#EOT
+user_data = <<-EOT
 #!/bin/bash
 echo "Hello, Dev Environment!" > /var/www/html/index.html
 EOT
