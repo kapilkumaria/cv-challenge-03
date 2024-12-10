@@ -1,0 +1,36 @@
+---
+- name: Update apt cache
+  apt:
+    update_cache: yes
+
+- name: Install Docker
+  package:
+    name: docker.io
+    state: present
+
+- name: Start and Enable Docker
+  service:
+    name: docker
+    state: started
+    enabled: true
+
+- name: Add user to Docker group
+  user:
+    name: ubuntu
+    groups: docker
+    append: true
+
+- name: Create Docker network
+  docker_network:
+    name: app_network
+    state: present
+
+# - name: Reload Docker group membership
+#   shell: "newgrp docker || true"
+#   args:
+#     executable: /bin/bash
+
+- name: Reboot the system to apply Docker group changes
+  reboot:
+    msg: "Rebooting to apply Docker group changes"
+    reboot_timeout: 300
