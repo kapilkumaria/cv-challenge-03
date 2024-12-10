@@ -7,10 +7,12 @@ on:
   pull_request:
     branches:
       - infra_features  # Optionally, trigger on pull requests targeting infra_features
+  workflow_dispatch:  # Allow manual trigger
 
 jobs:
   validate:
     runs-on: ubuntu-latest
+
 
     steps:
       # Step 1: Checkout Repository
