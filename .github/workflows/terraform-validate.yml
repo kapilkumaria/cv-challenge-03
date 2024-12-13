@@ -1,0 +1,34 @@
+name: Terraform Validation
+
+on:
+  push:
+    branches:
+      - infra_features  # Trigger on pushes to the infra_features branch
+  pull_request:
+    branches:
+      - infra_features  # Optionally, trigger on pull requests targeting infra_features
+#  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+
+    steps:
+      # Step 1: Checkout Repository
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      # Step 2: Setup Terraform
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.5.0
+
+      # Step 3: Initialize Terraform
+      - name: Terraform Init
+        run: terraform init
+
+      # Step 4: Validate Terraform
+      - name: Terraform Validate
+        run: terraform validate
