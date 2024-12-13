@@ -43,4 +43,4 @@ jobs:
       - name: Apply Terraform
         working-directory: terraform  # Move into terraform directory
         run: |
-          terraform apply --var-file=environments/${{ github.event.inputs.environment }}.tfvars --auto-approve
+          terraform apply --var-file=terraform/environments/${{ github.event.inputs.environment }}.tfvars --auto-approve
