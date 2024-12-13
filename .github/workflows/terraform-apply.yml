@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - infra_main
-  workflow_dispatch:  # Allow manual trigger
+  workflow_dispatch:  # Allow manual triggers
 
 jobs:
   apply:
