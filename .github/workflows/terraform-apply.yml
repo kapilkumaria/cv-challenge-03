@@ -27,7 +27,11 @@ jobs:
           aws-region: us-east-1
 
       - name: Initialize Terraform
-        run: terraform init
+        run: |
+          cd terraform  
+          terraform init
 
       - name: Apply Terraform
-        run: terraform apply -auto-approve
+        run: |
+          cd terraform
+          terraform apply --var-file=environments/dev.tfvars --auto-approve

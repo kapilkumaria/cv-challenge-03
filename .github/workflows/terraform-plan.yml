@@ -27,10 +27,14 @@ jobs:
           aws-region: us-east-1
 
       - name: Initialize Terraform
-        run: terraform init
+        run: |
+          cd terraform
+          terraform init
 
       - name: Terraform Plan
-        run: terraform plan -out=tfplan
-
+        run: |
+          cd terraform
+          terraform plan -out=tfplan --var-file=environments/dev.tfvars
+        
       - name: Display Terraform Plan
         run: terraform show -no-color tfplan
