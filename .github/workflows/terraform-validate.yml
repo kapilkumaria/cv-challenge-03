@@ -15,6 +15,7 @@ jobs:
 
 
     steps:
+      # Step 1: Configure AWS Credentials
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v3
         with:
@@ -22,22 +23,33 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      # Step 1: Checkout Repository
+      # Step 2: Checkout Repository
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      # Step 2: Setup Terraform
+      # Step 3: Setup Terraform
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.5.0
             
-      # Step 3: Initialize Terraform
+      # Step 4: Initialize Terraform
       - name: Terraform Init
         working-directory: ./terraform
-        run: terraform init      
+        run: terraform init    
+        
+      # Step 5: Format Terraform
+      - name: Terraform Format
+        working-directory: ./terraform
+        run: terraform fmt -check
       
-      # Step 4: Validate Terraform
+      # Step 6: Validate Terraform
       - name: Terraform Validate
         working-directory: ./terraform
         run: terraform validate
+
+      # Step 7: Plan Terraform
+      - name: Terraform Plan
+        working-directory: ./terraform
+        if: github.event_name == 'pull_request'
+        run: terraform plan
