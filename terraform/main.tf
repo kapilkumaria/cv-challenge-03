@@ -1,6 +1,6 @@
 provider "aws" {
-   #profile = "myAWS"  
-   region = "us-east-1"
+  profile = "myAWS"
+  region  = "us-east-1"
 }
 
 module "network" {
