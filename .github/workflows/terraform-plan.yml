@@ -44,7 +44,7 @@ jobs:
         working-directory: ./terraform
         run: terraform plan -out=tfplan --var-file=environments/dev.tfvars
         
-      # Step 7: Display Terraform  
+      # Step 7: Display Terraform Plan 
       - name: Display Terraform Plan
         working-directory: ./terraform
         run: terraform show -no-color tfplan
