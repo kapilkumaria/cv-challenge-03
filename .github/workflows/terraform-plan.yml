@@ -11,14 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_version: 1.5.0
-
+      # Step 1: Configure AWS Credentials
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v3
         with:
@@ -26,15 +19,32 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: Initialize Terraform
-        run: |
-          cd terraform
-          terraform init
+      # Step 2: Checkout Repository
+      - name: Checkout Repository
+        uses: actions/checkout@v3
 
+      # Step 3: Setup Terraform   
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.5.0
+
+      # Step 4: Initialize Terraform     
+      - name: Terraform Init
+        working-directory: ./terraform
+        run: terraform init      
+
+      # Step 5: Validate Terraform
+      - name: Validate Terraform
+        working-directory: ./terraform
+        run: terraform validate
+
+      # Step 6: Plan Terraform
       - name: Terraform Plan
-        run: |
-          cd terraform
-          terraform plan -out=tfplan --var-file=environments/dev.tfvars
+        working-directory: ./terraform
+        run: terraform plan -out=tfplan --var-file=environments/dev.tfvars
         
+      # Step 7: Display Terraform  
       - name: Display Terraform Plan
+        working-directory: ./terraform
         run: terraform show -no-color tfplan
