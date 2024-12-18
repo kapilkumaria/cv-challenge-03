@@ -1,10 +1,6 @@
 provider "aws" {
-<<<<<<< HEAD
-  profile = "myAWS"
-=======
    #profile = "myAWS"  
    region = "us-east-1"
->>>>>>> origin/infra_main
 }
 
 module "network" {
