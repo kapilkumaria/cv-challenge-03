@@ -34,7 +34,11 @@ variable "ingress_rules" {
       from_port          = 22,
       to_port            = 22,
       protocol           = "tcp",
+<<<<<<< HEAD
       cidr_blocks        = ["44.195.82.101/32"],
+=======
+      cidr_blocks        = ["3.239.200.35/32"],
+>>>>>>> origin/infra_main
       ipv6_cidr_blocks   = [],
       security_group_ids = []
     },
