@@ -33,12 +33,13 @@ jobs:
           terraform_version: 1.5.0
 
       #Step 1: Change to Terraform Directory
-      - name: Change to Terraform Directory
-        working-directory: ./terraform
-        run: pwd     
+      #- name: Change to Terraform Directory
+      #  working-directory: ./terraform
+      #  run: pwd     
       
       # Step 3: Initialize Terraform
       - name: Terraform Init
+        working-directory: ./terraform
         run: terraform init
       
       # Step 3: Initialize Terraform
@@ -50,4 +51,5 @@ jobs:
 
       # Step 4: Validate Terraform
       - name: Terraform Validate
+        working-directory: ./terraform
         run: terraform validate
