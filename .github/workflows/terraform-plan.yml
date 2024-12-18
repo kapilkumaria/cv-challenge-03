@@ -4,7 +4,7 @@ on:
   pull_request:
     branches:
       - infra_main
-  workflow_dispatch:  # Allow manual trigger
+  # workflow_dispatch:  # Allow manual trigger
 
 jobs:
   plan:
