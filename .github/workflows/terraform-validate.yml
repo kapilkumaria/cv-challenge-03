@@ -19,16 +19,16 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      # Step 1: Change to Terraform Directory
-      - name: Change to Terraform Directory
-        working-directory: ./terraform
-        run: pwd
-
       # Step 2: Setup Terraform
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.5.0
+
+      # Step 1: Change to Terraform Directory
+      - name: Change to Terraform Directory
+        working-directory: ./terraform
+        run: pwd
 
       # Step 3: Initialize Terraform
       - name: Terraform Init
