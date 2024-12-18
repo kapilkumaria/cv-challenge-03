@@ -50,7 +50,8 @@ resource "aws_route_table_association" "public" {
 resource "aws_eip" "nat" {
   count = var.enable_nat_gateway ? 1 : 0
 
-  vpc = true
+  # vpc = true
+  domain = "vpc"  # Replaces the deprecated 'vpc = true'
   tags = merge(var.tags, { "Name" = "${var.environment}-nat-eip-${count.index + 1}" })
 }
 
