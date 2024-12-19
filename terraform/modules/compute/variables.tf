@@ -314,7 +314,8 @@ variable "ingress_rules" {
                             "13.105.49.190/31",
                             "13.105.49.192/31"
                            ]
-      security_group_id  = aws_security_group.example.id
+      security_group_ids = []
+
     },
     {
       description        = "Allow HTTP",
