@@ -110,9 +110,9 @@ jobs:
       - name: Check Python
         run: python3 --version
 
-      # Step 13:  
-      - name: Debug Inventory File
-        run: cat ansible/inventory/ansible.ini  
+      # # Step 13:  
+      # - name: Debug Inventory File
+      #   run: cat ansible/inventory/ansible.ini  
 
       # # Step 14:   
       # - name: Set up SSH Key
