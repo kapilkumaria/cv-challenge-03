@@ -100,4 +100,4 @@ jobs:
         if: github.event_name == 'push'
         run: |
           cd ansible
-          ansible-playbook -i inventory/ansible.ini site.yml
+          ansible-playbook -i inventory/ansible.ini site.yml -vvv
