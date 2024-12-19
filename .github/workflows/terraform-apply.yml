@@ -94,7 +94,7 @@ jobs:
       - name: Terraform Apply
         if: github.event_name == 'push'
         working-directory: ./terraform
-        run: terraform apply --var-file=environments/dev.tfvars --auto-approve
+        run: terraform apply --var-file=environments/dev.tfvars -lock=false --auto-approve
 
       - name: Trigger Ansible Deployment
         if: github.event_name == 'push'
