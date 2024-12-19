@@ -4,10 +4,14 @@ on:
   pull_request:
     branches:
       - infra_main
-  #push:
-  #  branches:
-  #    - infra_main
-  # workflow_dispatch:  # Allow manual trigger
+  push:
+    branches:
+      - infra_main
+  workflow_dispatch:  # Allow manual trigger
+
+permissions:
+  contents: read
+  pull-requests: write
 
 jobs:
   plan-and-cost:
