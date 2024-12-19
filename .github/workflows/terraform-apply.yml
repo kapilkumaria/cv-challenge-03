@@ -114,6 +114,18 @@ jobs:
           ssh-keyscan -H 98.81.188.239 >> ~/.ssh/known_hosts
           ls -l ~/.ssh # Debug to confirm known_hosts
 
+      - name: Debug SSH Setup
+        run: |
+          ls -l ~/.ssh
+          cat ~/.ssh/known_hosts
+
+      - name: Debug SSH Connection
+        run: |
+            ssh -i ~/.ssh/devops1.pem -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedAlgorithms=+ssh-rsa -o StrictHostKeyChecking=no ubuntu@98.81.188.239 "echo Debugging SSH connection"
+        env:
+            ANSIBLE_HOST_KEY_CHECKING: false
+        
+
       - name: Test SSH Connection
         run: |
             ssh -i ~/.ssh/devops1.pem -o StrictHostKeyChecking=no ubuntu@98.81.188.239
