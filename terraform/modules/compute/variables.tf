@@ -48,13 +48,12 @@ variable "ingress_rules" {
       security_group_ids = []
     },
     {
-      description        = "Allow SSH from GitHub Runner",
-      from_port          = 22,
-      to_port            = 22,
-      protocol           = "tcp",
-      cidr_blocks        = ["44.195.82.101/32"],
-      ipv6_cidr_blocks   = [],
-      security_group_ids = []
+      description        = "Allow SSH from GitHub Runner"
+      from_port          = 22
+      to_port            = 22
+      protocol           = "tcp"
+      cidr_blocks        = data.external.github_runner_ips.result.ip_ranges
+      security_group_id  = aws_security_group.example.id
     },
     {
       description        = "Allow HTTP",
