@@ -113,6 +113,11 @@ jobs:
         run: |
           ssh-keyscan -H 98.81.188.239 >> ~/.ssh/known_hosts
           ls -l ~/.ssh # Debug to confirm known_hosts
+
+      - name: Test SSH Connection
+        run: |
+            ssh -i ~/.ssh/devops1.pem -o StrictHostKeyChecking=no ubuntu@98.81.188.239
+     
       
       - name: Trigger Ansible Deployment
         if: github.event_name == 'push'
