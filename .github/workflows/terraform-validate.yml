@@ -42,7 +42,7 @@ jobs:
         working-directory: ./terraform
         run: terraform validate
 
-      # Step 7: Plan Terraform
+      # Step 6: Plan Terraform
       - name: Terraform Plan
         working-directory: ./terraform
         if: github.event_name == 'pull_request'
