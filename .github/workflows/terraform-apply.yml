@@ -18,7 +18,7 @@ jobs:
     runs-on: self-hosted
 
     steps:
-      # Configure AWS credentials
+      # Step 1: Configure AWS credentials
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v3
         with:
@@ -26,39 +26,48 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      # Checkout Repository
+      # Step 2: Checkout Repository
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      # Setup Terraform
+      # Step 3: Setup Terraform
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.5.0
 
-      # Terraform Init
+      # Step 4: Setup NodeJS    
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      # Step 5: Terraform Init
       - name: Terraform Init
         working-directory: ./terraform
         run: terraform init
 
-      # PR-specific steps
+      # Step 6: PR-specific steps
       - name: Terraform Plan
         if: github.event_name == 'pull_request'
         id: plan
         working-directory: ./terraform
         run: terraform plan -out=tfplan --var-file=environments/dev.tfvars -lock=false
 
+      # Step 7: Convert Plan to JSON  
       - name: Convert Plan to JSON
         if: github.event_name == 'pull_request'
         working-directory: ./terraform
         run: terraform show -json tfplan > tfplan.json
 
+      # Step 8: Setup InfraCost    
       - name: Setup InfraCost
         if: github.event_name == 'pull_request'
         uses: infracost/actions/setup@v2
         with:
           api-key: ${{ secrets.INFRACOST_API_KEY }}
 
+      # Step 9:     
       - name: Generate Cost Estimation
         if: github.event_name == 'pull_request'
         working-directory: ./terraform
@@ -66,6 +75,7 @@ jobs:
           infracost breakdown --path=tfplan.json --format=json --out-file=infracost.json --format=table
           cat infracost.json
 
+      # Step 10:      
       - name: Comment on PR with Cost Estimation
         if: github.event_name == 'pull_request'
         uses: actions/github-script@v6
@@ -90,49 +100,51 @@ jobs:
               `
             });
 
-      # Post-merge steps (push event)
+      # Step 11: Post-merge steps (push event)
       - name: Terraform Apply
         if: github.event_name == 'push'
         working-directory: ./terraform
         run: terraform apply --var-file=environments/dev.tfvars -lock=false --auto-approve
 
+      # Step 12: Check Python  
       - name: Check Python
         run: python3 --version
 
+      # Step 13:  
       - name: Debug Inventory File
         run: cat ansible/inventory/ansible.ini  
 
-      - name: Set up SSH Key
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" | base64 -d > ~/.ssh/devops1.pem
-          chmod 600 ~/.ssh/devops1.pem
-          ls -l ~/.ssh # Debug to ensure the key exists
+      # # Step 14:   
+      # - name: Set up SSH Key
+      #   run: |
+      #     mkdir -p ~/.ssh
+      #     echo "${{ secrets.SSH_PRIVATE_KEY }}" | base64 -d > ~/.ssh/devops1.pem
+      #     chmod 600 ~/.ssh/devops1.pem
+      #     ls -l ~/.ssh # Debug to ensure the key exists
   
-      - name: Add SSH Host Key
-        run: |
-          ssh-keyscan -H 98.81.188.239 >> ~/.ssh/known_hosts
-          ls -l ~/.ssh # Debug to confirm known_hosts
+      # - name: Add SSH Host Key
+      #   run: |
+      #     ssh-keyscan -H 98.81.188.239 >> ~/.ssh/known_hosts
+      #     ls -l ~/.ssh # Debug to confirm known_hosts
 
-      - name: Debug SSH Setup
-        run: |
-          ls -l ~/.ssh
-          cat ~/.ssh/known_hosts
+      # - name: Debug SSH Setup
+      #   run: |
+      #     ls -l ~/.ssh
+      #     cat ~/.ssh/known_hosts
 
-      - name: Debug SSH Connection
-        run: |
-            ssh -i ~/.ssh/devops1.pem -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedAlgorithms=+ssh-rsa -o StrictHostKeyChecking=no ubuntu@98.81.188.239 "echo Debugging SSH connection"
-        env:
-            ANSIBLE_HOST_KEY_CHECKING: false
+      # - name: Debug SSH Connection
+      #   run: |
+      #       ssh -i ~/.ssh/devops1.pem -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedAlgorithms=+ssh-rsa -o StrictHostKeyChecking=no ubuntu@98.81.188.239 "echo Debugging SSH connection"
+      #   env:
+      #       ANSIBLE_HOST_KEY_CHECKING: false
         
 
-      - name: Test SSH Connection
-        run: |
-            ssh -i /home/runner/.ssh/devops1.pem -o StrictHostKeyChecking=no ubuntu@98.81.188.239 "echo SSH connection successful!"
+      # - name: Test SSH Connection
+      #   run: |
+      #       ssh -i /home/runner/.ssh/devops1.pem -o StrictHostKeyChecking=no ubuntu@98.81.188.239 "echo SSH connection successful!"
      
-      
+      # Step 12:
       - name: Trigger Ansible Deployment
         if: github.event_name == 'push'
-        run: |
-          
+        run: |          
           ansible-playbook -i ./ansible/inventory/ansible.ini ./ansible/site.yml -e ansible_ssh_common_args='-o StrictHostKeyChecking=no -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedAlgorithms=+ssh-rsa' -vvv

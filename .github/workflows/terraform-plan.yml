@@ -29,22 +29,28 @@ jobs:
         with:
           terraform_version: 1.5.0
 
-      # Step 4: Initialize Terraform     
+      # Step 4: Setup NodeJS    
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      # Step 5: Initialize Terraform     
       - name: Terraform Init
         working-directory: ./terraform
         run: terraform init      
 
-      # Step 5: Validate Terraform
+      # Step 6: Validate Terraform
       - name: Validate Terraform
         working-directory: ./terraform
         run: terraform validate
 
-      # Step 6: Plan Terraform
+      # Step 7: Plan Terraform
       - name: Terraform Plan
         working-directory: ./terraform
         run: terraform plan -out=tfplan --var-file=environments/dev.tfvars -lock=false
         
-      # Step 7: Display Terraform Plan
+      # Step 8: Display Terraform Plan
       - name: Display Terraform Plan
         working-directory: ./terraform
         run: terraform show -no-color tfplan
