@@ -7,7 +7,7 @@ on:
   # workflow_dispatch:  # Allow manual trigger
 
 jobs:
-  plan:
+  plan-and-cost:
     runs-on: ubuntu-latest
 
     steps:
@@ -34,7 +34,57 @@ jobs:
         working-directory: ./terraform
         run: terraform init      
 
-      # Step 5: Apply Terraform
-      - name: Terraform Apply
+      # Step 5: Run Terraform Plan
+      - name: Terraform Plan
+        id: plan
         working-directory: ./terraform
-        run: terraform apply --var-file=environments/dev.tfvars
+        run: terraform plan -out=tfplan
+
+      # Step 6: Convert Plan to JSON
+      - name: Convert Terraform Plan to JSON
+        working-directory: ./terraform
+        run: terraform show -json tfplan > tfplan.json
+
+      # Step 7: Set up InfraCost
+      - name: Setup InfraCost
+        uses: infracost/actions/setup@v2
+        with:
+          api-key: ${{ secrets.INFRACOST_API_KEY }}
+
+      # Step 8: Run InfraCost
+      - name: Generate Cost Estimation
+        id: infracost
+        working-directory: ./terraform
+        run: |
+          infracost breakdown --path=tfplan.json --format=json --out-file=infracost.json
+
+      # Step 9: Post Plan and Cost Estimation to PR
+      - name: Comment on PR with Cost Estimation
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const fs = require('fs');
+            const planOutput = fs.readFileSync('./terraform/tfplan.json', 'utf8');
+            const costOutput = fs.readFileSync('./terraform/infracost.json', 'utf8');
+            github.rest.issues.createComment({
+              issue_number: context.payload.pull_request.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `
+              ### Terraform Plan
+              \`\`\`json
+              ${planOutput}
+              \`\`\`
+              ### Cost Estimation
+              \`\`\`json
+              ${costOutput}
+              \`\`\`
+              `
+            });
+
+      # Step 10: Apply Terraform (optional, ensure auto-approval is safe for your use case)
+      - name: Terraform Apply
+        if: github.event_name == 'workflow_dispatch' # Only run on manual trigger for safety
+        working-directory: ./terraform
+        run: terraform apply --var-file=environments/dev.tfvars --auto-approve
