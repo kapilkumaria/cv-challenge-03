@@ -96,8 +96,13 @@ jobs:
         working-directory: ./terraform
         run: terraform apply --var-file=environments/dev.tfvars -lock=false --auto-approve
 
+      - name: Check Python
+        run: python3 --version
+
+      - name: Debug Inventory File
+        run: cat ansible/inventory/ansible.ini  
+      
       - name: Trigger Ansible Deployment
         if: github.event_name == 'push'
         run: |
-          cd ansible
-          ansible-playbook -i inventory/ansible.ini site.yml -vvv
+          ansible-playbook -i ./ansible/inventory/ansible.ini ./ansible/site.yml
