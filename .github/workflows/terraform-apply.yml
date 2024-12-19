@@ -41,7 +41,7 @@ jobs:
       - name: Terraform Plan
         id: plan
         working-directory: ./terraform
-        run: terraform plan -out=tfplan
+        run: terraform plan -out=tfplan --var-file=environments/dev.tfvars        
 
       # Step 6: Convert Plan to JSON
       - name: Convert Terraform Plan to JSON
