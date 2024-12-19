@@ -90,7 +90,12 @@ jobs:
               `
             });
 
-      # Step 10: Apply Terraform (optional, ensure auto-approval is safe for your use case)
+      # Step 10: Debug InfraCost Output
+      - name: Debug InfraCost Output
+        run: cat ./terraform/infracost.json
+          
+
+      # Step 11: Apply Terraform (optional, ensure auto-approval is safe for your use case)
       - name: Terraform Apply
         if: github.event_name == 'workflow_dispatch' # Only run on manual trigger for safety
         working-directory: ./terraform
