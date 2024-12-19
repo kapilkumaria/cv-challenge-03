@@ -63,7 +63,9 @@ jobs:
         id: infracost
         working-directory: ./terraform
         run: |
-          infracost breakdown --path=tfplan.json --format=json --out-file=infracost.json
+          infracost breakdown --path=tfplan.json --format=json --out-file=infracost.json --format=table
+          cat infracost.json
+          
 
       # Step 9: Post Plan and Cost Estimation to PR
       - name: Comment on PR with Cost Estimation
