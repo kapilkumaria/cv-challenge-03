@@ -105,4 +105,4 @@ jobs:
       - name: Trigger Ansible Deployment
         if: github.event_name == 'push'
         run: |
-          ansible-playbook -i ./ansible/inventory/ansible.ini ./ansible/site.yml
+          ansible-playbook -i ./ansible/inventory/ansible.ini ./ansible/site.yml -vvv
