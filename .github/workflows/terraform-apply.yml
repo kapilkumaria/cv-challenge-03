@@ -104,8 +104,8 @@ jobs:
 
       - name: Set up SSH Key
         run: |
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" | base64 -d > ~/.ssh/devops.pem
-          chmod 600 ~/.ssh/devops.pem
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" | base64 -d > ~/.ssh/devops1.pem
+          chmod 600 ~/.ssh/devops1.pem
   
       - name: Add SSH Host Key
         run: |
