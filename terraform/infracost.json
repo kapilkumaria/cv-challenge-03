@@ -1,0 +1,37 @@
+[1mProject:[22m kapilkumaria/cv-challenge-03/terraform/tfplan.json
+
+ [4mName[24m                                                      [4mMonthly Qty[24m  [4mUnit[24m                  [4mMonthly Cost[24m   
+                                                                                                             
+ [1mmodule.compute.aws_instance.compute[0][22m                                                                      
+ [2m├─[22m Instance usage (Linux/UNIX, on-demand, t2.large)               730  hours                       $67.74   
+ [2m└─[22m root_block_device                                                                                        
+ [2m   └─[22m Storage (general purpose SSD, gp2)                            8  GB                           $0.80   
+                                                                                                             
+ [1mmodule.network.aws_nat_gateway.nat[0][22m                                                                       
+ [2m├─[22m NAT gateway                                                    730  hours                       $32.85   
+ [2m└─[22m Data processed                                    Monthly cost depends on usage: $0.045 per GB           
+                                                                                                             
+ [1mmodule.compute.aws_route53_record.root_record[22m                                                               
+ [2m├─[22m Standard queries (first 1B)                       Monthly cost depends on usage: $0.40 per 1M queries    
+ [2m├─[22m Latency based routing queries (first 1B)          Monthly cost depends on usage: $0.60 per 1M queries    
+ [2m└─[22m Geo DNS queries (first 1B)                        Monthly cost depends on usage: $0.70 per 1M queries    
+                                                                                                             
+ [1mmodule.compute.aws_route53_record.www_record[22m                                                                
+ [2m├─[22m Standard queries (first 1B)                       Monthly cost depends on usage: $0.40 per 1M queries    
+ [2m├─[22m Latency based routing queries (first 1B)          Monthly cost depends on usage: $0.60 per 1M queries    
+ [2m└─[22m Geo DNS queries (first 1B)                        Monthly cost depends on usage: $0.70 per 1M queries    
+                                                                                                             
+[1m OVERALL TOTAL[22m                                                                                    $101.39 
+
+*Usage costs can be estimated by updating Infracost Cloud settings, see docs for other options.
+
+──────────────────────────────────
+20 cloud resources were detected:
+∙ 4 were estimated
+∙ 16 were free
+
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━┳━━━━━━━━━━━━┓
+┃ Project                                            ┃ Baseline cost ┃ Usage cost* ┃ Total cost ┃
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━╋━━━━━━━━━━━━┫
+┃ kapilkumaria/cv-challenge-03/terraform/tfplan.json ┃          $101 ┃           - ┃       $101 ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━┻━━━━━━━━━━━━┛
