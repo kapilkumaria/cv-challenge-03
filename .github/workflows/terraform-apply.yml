@@ -3,11 +3,8 @@ name: Terraform Plan with Cost Estimation
 on:
   pull_request:
     branches:
-      - infra_main    
-  push:
-    branches:
-      - infra_main
-  workflow_dispatch:  # Allow manual trigger
+      - infra_main      
+  # workflow_dispatch:  # Allow manual trigger
 
 permissions:
   contents: read
