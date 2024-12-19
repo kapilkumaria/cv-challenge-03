@@ -55,20 +55,20 @@ resource "aws_instance" "compute" {
 # Dynamically Generate Ansible Inventory
 resource "local_file" "ansible_inventory" {
   content = <<EOT
-[application]
-%{ for ip in aws_instance.compute.*.public_ip ~}
-${ip} ansible_user=ubuntu ansible_ssh_private_key_file=~/devops1.pem
-%{ endfor }
+# [application]
+# %{ for ip in aws_instance.compute.*.public_ip ~}
+# ${ip} ansible_user=ubuntu ansible_ssh_private_key_file=~/devops1.pem
+# %{ endfor }
 
 [monitoring]
 %{ for ip in aws_instance.compute.*.public_ip ~}
 ${ip} ansible_user=ubuntu ansible_ssh_private_key_file=~/devops1.pem
 %{ endfor }
 
-[traefik]
-%{ for ip in aws_instance.compute.*.public_ip ~}
-${ip} ansible_user=ubuntu ansible_ssh_private_key_file=~/devops1.pem
-%{ endfor }
+# [traefik]
+# %{ for ip in aws_instance.compute.*.public_ip ~}
+# ${ip} ansible_user=ubuntu ansible_ssh_private_key_file=~/devops1.pem
+# %{ endfor }
 EOT
   filename = "${path.module}/../../../ansible/inventory/ansible.ini"
 }
