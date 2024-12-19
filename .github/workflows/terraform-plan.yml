@@ -42,9 +42,9 @@ jobs:
       # Step 6: Plan Terraform
       - name: Terraform Plan
         working-directory: ./terraform
-        run: terraform plan -out=tfplan --var-file=environments/dev.tfvars
+        run: terraform plan -out=tfplan --var-file=environments/dev.tfvars -lock=false
         
-      # Step 7: Display Terraforms
+      # Step 7: Display Terraform Plan
       - name: Display Terraform Plan
         working-directory: ./terraform
         run: terraform show -no-color tfplan
