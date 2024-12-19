@@ -99,4 +99,5 @@ jobs:
       - name: Trigger Ansible Deployment
         if: github.event_name == 'push'
         run: |
-          ansible-playbook -i inventory/hosts playbooks/monitoring.yml
+          cd ansible
+          ansible-playbook -i inventory/ansible.ini site.yml
