@@ -64,6 +64,7 @@ jobs:
         working-directory: ./terraform
         run: |
           infracost breakdown --path=tfplan.json --format=json --out-file=infracost.json --format=table
+          cat infracost.json
 
       - name: Comment on PR with Cost Estimation
         if: github.event_name == 'pull_request'
