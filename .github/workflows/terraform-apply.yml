@@ -39,7 +39,7 @@ jobs:
         working-directory: ./terraform  # Move into terraform directory
         run: terraform init
 
-      # Step 5: Apply Terraform Configuration
+      # Step 5: Apply Terraform Configurations
       - name: Apply Terraform
         working-directory: ./terraform  # Move into terraform directory
         run: terraform apply --var-file=environments/dev.tfvars --auto-approve
