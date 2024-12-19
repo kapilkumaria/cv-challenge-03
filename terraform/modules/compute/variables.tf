@@ -30,7 +30,7 @@ variable "ingress_rules" {
   }))
   default = [
     {
-      description        = "Allow SSH",
+      description        = "Allow SSH from ec2 host",
       from_port          = 22,
       to_port            = 22,
       protocol           = "tcp",
@@ -39,11 +39,20 @@ variable "ingress_rules" {
       security_group_ids = []
     },
     {
-      description        = "Allow SSH",
+      description        = "Allow SSH from host machine",
       from_port          = 22,
       to_port            = 22,
       protocol           = "tcp",
       cidr_blocks        = ["50.66.177.15/32"],
+      ipv6_cidr_blocks   = [],
+      security_group_ids = []
+    },
+    {
+      description        = "Allow SSH from GitHub Runner",
+      from_port          = 22,
+      to_port            = 22,
+      protocol           = "tcp",
+      cidr_blocks        = ["44.195.82.101/32"],
       ipv6_cidr_blocks   = [],
       security_group_ids = []
     },
