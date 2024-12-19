@@ -34,7 +34,7 @@ variable "ingress_rules" {
       from_port          = 22,
       to_port            = 22,
       protocol           = "tcp",
-      cidr_blocks        = ["44.195.82.101/32"],
+      cidr_blocks        = ["34.205.171.162/32"],
       ipv6_cidr_blocks   = [],
       security_group_ids = []
     },
@@ -52,7 +52,7 @@ variable "ingress_rules" {
       from_port          = 22,
       to_port            = 22,
       protocol           = "tcp"
-      cidr_blocks        = ["0.0.0.0/0"], # Fix this
+      cidr_blocks        = ["3.238.195.204/32"], # Fix this
       ipv6_cidr_blocks   = [],
       security_group_ids = []
     },
