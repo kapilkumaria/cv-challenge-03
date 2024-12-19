@@ -104,13 +104,15 @@ jobs:
 
       - name: Set up SSH Key
         run: |
+          mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" | base64 -d > ~/.ssh/devops1.pem
           chmod 600 ~/.ssh/devops1.pem
+          ls -l ~/.ssh # Debug to ensure the key exists
   
       - name: Add SSH Host Key
         run: |
-          mkdir -p ~/.ssh
           ssh-keyscan -H 98.81.188.239 >> ~/.ssh/known_hosts
+          ls -l ~/.ssh # Debug to confirm known_hosts
       
       - name: Trigger Ansible Deployment
         if: github.event_name == 'push'
