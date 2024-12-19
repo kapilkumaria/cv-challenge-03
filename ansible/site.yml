@@ -4,4 +4,4 @@
   become: true
   roles:
     - role: common  # Create network
-    - role: monitoring  # Deploy monitoring stack
+    - role: monitoring  # Deploy monitoring stacks
