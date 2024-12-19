@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - infra_main
+      - infra_features
   push:
     branches:
       - infra_main
