@@ -313,9 +313,9 @@ variable "ingress_rules" {
                             "13.105.49.188/31",
                             "13.105.49.190/31",
                             "13.105.49.192/31"
-                           ]
+                           ],
+      ipv6_cidr_blocks   = [],
       security_group_ids = []
-
     },
     {
       description        = "Allow HTTP",
