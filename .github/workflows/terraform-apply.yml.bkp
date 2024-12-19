@@ -1,24 +1,21 @@
-name: Terraform Plan with Cost Estimation and Deployment
+name: Terraform Plan with Cost Estimation
 
 on:
   pull_request:
     branches:
-      - infra_main
-  push:
-    branches:
-      - infra_main
-  workflow_dispatch:  # Allow manual trigger
+      - infra_main      
+  # workflow_dispatch:  # Allow manual triggers
 
 permissions:
   contents: read
   pull-requests: write
 
 jobs:
-  plan-and-deploy:
+  plan-and-cost:
     runs-on: ubuntu-latest
 
     steps:
-      # Configure AWS credentials
+      # Step 1: Configure AWS Credentials
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v3
         with:
@@ -26,45 +23,47 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      # Checkout Repository
+      # Step 2: Checkout Repository
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      # Setup Terraform
+      # Step 3: Setup Terraform   
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.5.0
 
-      # Terraform Init
+      # Step 4: Initialize Terraform     
       - name: Terraform Init
         working-directory: ./terraform
-        run: terraform init
+        run: terraform init      
 
-      # PR-specific steps
+      # Step 5: Run Terraform Plan
       - name: Terraform Plan
-        if: github.event_name == 'pull_request'
         id: plan
         working-directory: ./terraform
-        run: terraform plan -out=tfplan --var-file=environments/dev.tfvars -lock=false
+        run: terraform plan -out=tfplan --var-file=environments/dev.tfvars -lock=false        
 
-      - name: Convert Plan to JSON
-        if: github.event_name == 'pull_request'
+      # Step 6: Convert Plan to JSON
+      - name: Convert Terraform Plan to JSON
         working-directory: ./terraform
         run: terraform show -json tfplan > tfplan.json
 
+      # Step 7: Set up InfraCost
       - name: Setup InfraCost
-        if: github.event_name == 'pull_request'
         uses: infracost/actions/setup@v2
         with:
           api-key: ${{ secrets.INFRACOST_API_KEY }}
 
+      # Step 8: Run InfraCost
       - name: Generate Cost Estimation
-        if: github.event_name == 'pull_request'
+        id: infracost
         working-directory: ./terraform
         run: |
           infracost breakdown --path=tfplan.json --format=json --out-file=infracost.json --format=table
+          cat infracost.json          
 
+      # Step 9: Post Plan and Cost Estimation to PR
       - name: Comment on PR with Cost Estimation
         if: github.event_name == 'pull_request'
         uses: actions/github-script@v6
@@ -87,15 +86,10 @@ jobs:
               ${costOutput}
               \`\`\`
               `
-            });
+            });      
 
-      # Post-merge steps (push event)
+      # Step 10: Apply Terraform (optional, ensure auto-approval is safe for your use case)
       - name: Terraform Apply
-        if: github.event_name == 'push'
+        if: github.event_name == 'workflow_dispatch' # Only run on manual trigger for safety
         working-directory: ./terraform
         run: terraform apply --var-file=environments/dev.tfvars --auto-approve
-
-      - name: Trigger Ansible Deployment
-        if: github.event_name == 'push'
-        run: |
-          ansible-playbook -i inventory/hosts playbooks/monitoring.yml
