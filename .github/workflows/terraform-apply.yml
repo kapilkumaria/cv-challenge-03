@@ -101,6 +101,16 @@ jobs:
 
       - name: Debug Inventory File
         run: cat ansible/inventory/ansible.ini  
+
+      - name: Set up SSH Key
+        run: |
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" | base64 -d > ~/.ssh/devops.pem
+          chmod 600 ~/.ssh/devops.pem
+  
+      - name: Add SSH Host Key
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H 98.81.188.239 >> ~/.ssh/known_hosts
       
       - name: Trigger Ansible Deployment
         if: github.event_name == 'push'
