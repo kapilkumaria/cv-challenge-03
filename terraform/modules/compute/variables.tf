@@ -48,9 +48,9 @@ variable "ingress_rules" {
       security_group_ids = []
     },
     {
-      description        = "Allow SSH from GitHub Runner Range"
-      from_port          = 22
-      to_port            = 22
+      description        = "Allow SSH from GitHub Runner Range",
+      from_port          = 22,
+      to_port            = 22,
       protocol           = "tcp"
       cidr_blocks        = [
                             "4.148.0.0/16",
