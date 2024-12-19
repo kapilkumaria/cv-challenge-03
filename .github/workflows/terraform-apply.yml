@@ -128,7 +128,7 @@ jobs:
 
       - name: Test SSH Connection
         run: |
-            ssh -i ~/.ssh/devops1.pem -o StrictHostKeyChecking=no ubuntu@98.81.188.239
+            ssh -i /home/runner/.ssh/devops1.pem -o StrictHostKeyChecking=no ubuntu@98.81.188.239 "echo SSH connection successful!"
      
       
       - name: Trigger Ansible Deployment
