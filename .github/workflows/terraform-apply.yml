@@ -3,8 +3,7 @@ name: Terraform Plan with Cost Estimation
 on:
   pull_request:
     branches:
-      - infra_main
-      - infra_features
+      - infra_main    
   push:
     branches:
       - infra_main
@@ -65,8 +64,7 @@ jobs:
         working-directory: ./terraform
         run: |
           infracost breakdown --path=tfplan.json --format=json --out-file=infracost.json --format=table
-          cat infracost.json
-          
+          cat infracost.json          
 
       # Step 9: Post Plan and Cost Estimation to PR
       - name: Comment on PR with Cost Estimation
@@ -91,14 +89,9 @@ jobs:
               ${costOutput}
               \`\`\`
               `
-            });
+            });      
 
-      # Step 10: Debug InfraCost Output
-      - name: Debug InfraCost Output
-        run: cat ./terraform/infracost.json
-          
-
-      # Step 11: Apply Terraform (optional, ensure auto-approval is safe for your use case)
+      # Step 10: Apply Terraform (optional, ensure auto-approval is safe for your use case)
       - name: Terraform Apply
         if: github.event_name == 'workflow_dispatch' # Only run on manual trigger for safety
         working-directory: ./terraform
