@@ -4,7 +4,4 @@
   become: true
   roles:
     - role: common  # Create network
-    - role: application # Deploy backend and frontend
     - role: monitoring  # Deploy monitoring stack
-    - role: traefik # Deploy Traefik
-    - role: nginx   # Deploy Nginx
