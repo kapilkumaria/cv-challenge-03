@@ -97,6 +97,18 @@ resource "null_resource" "run_ansible" {
   depends_on = [null_resource.wait_for_instance]  
 }
 
+resource "null_resource" "debug_inventory" {
+  provisioner "local-exec" {
+    command = "cat ../../../ansible/inventory/ansible.ini"
+  }
+  depends_on = [local_file.ansible_inventory]
+}
+
+
+output "instance_public_ips" {
+  value = aws_instance.compute.*.public_ip
+}
+
 
 # # Trigger Ansible Playbook After Terraform Deployment
 # resource "null_resource" "run_ansible" {
