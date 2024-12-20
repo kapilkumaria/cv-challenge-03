@@ -115,7 +115,7 @@ jobs:
 
       # Step 13: Debug Ansible Inventory
       - name: Debug Ansible Inventory
-        run: cat ../../../ansible/inventory/ansible.ini
+        run: cat ../../ansible/inventory/ansible.ini
 
       # Step 14: Clear Ansible SSH Cache
       - name: Clear Ansible SSH Cache
