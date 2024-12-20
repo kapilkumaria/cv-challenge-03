@@ -107,13 +107,26 @@ resource "aws_route53_record" "root_record" {
   depends_on = [aws_instance.compute]
 }
 
+# resource "null_resource" "run_ansible" {
+#   provisioner "local-exec" {
+#     command = "ansible-playbook -i ../ansible/inventory/ansible.ini ../ansible/site.yml -vvvv"
+#   }
+
+#   depends_on = [
+#     null_resource.wait_for_instance
+#   ]
+# }
+
 resource "null_resource" "run_ansible" {
   provisioner "local-exec" {
     command = "ansible-playbook -i ../ansible/inventory/ansible.ini ../ansible/site.yml -vvvv"
   }
 
-  depends_on = [
-    null_resource.wait_for_instance
-  ]
+  depends_on = [null_resource.wait_for_instance]
+
+  triggers = {
+    instance_ids = join(",", aws_instance.compute.*.id)
+    instance_ips = join(",", aws_instance.compute.*.public_ip)
+  }
 }
 
