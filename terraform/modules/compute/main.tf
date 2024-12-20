@@ -65,12 +65,27 @@ EOT
   depends_on = [aws_instance.compute]
 }
 
+# resource "null_resource" "wait_for_instance" {
+#   provisioner "local-exec" {
+#     command = "sleep 60"
+#   }
+#   depends_on = [aws_instance.compute]
+# }
+
 resource "null_resource" "wait_for_instance" {
-  provisioner "local-exec" {
-    command = "sleep 60"
+  provisioner "remote-exec" {
+    inline = ["echo 'Instance is ready!'"]
+    connection {
+      type        = "ssh"
+      host        = aws_instance.compute.0.public_ip
+      user        = "ubuntu"
+      private_key = file("/home/ubuntu/devops1.pem")
+    }
   }
+
   depends_on = [aws_instance.compute]
 }
+
 
 # Route 53 Records
 resource "aws_route53_record" "www_record" {
