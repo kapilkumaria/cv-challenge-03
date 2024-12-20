@@ -61,6 +61,8 @@ ${ip} ansible_user=ubuntu ansible_ssh_private_key_file=/home/ubuntu/devops1.pem
 %{ endfor }
 EOT
   filename = "${path.module}/../../../ansible/inventory/ansible.ini"
+
+  depends_on = [aws_instance.compute]
 }
 
 resource "null_resource" "wait_for_instance" {
@@ -89,33 +91,21 @@ resource "aws_route53_record" "root_record" {
   depends_on = [aws_instance.compute]
 }
 
-# resource "null_resource" "run_ansible" {
-#   provisioner "local-exec" {
-#     command = <<EOT
-#       echo "Current Directory: $(pwd)"
-#       echo "Contents of Inventory:"
-#       cat ../../ansible/inventory/ansible.ini
-#       echo "Executing Ansible Playbook..."
-#       ansible-playbook -i ../../ansible/inventory/ansible.ini ../../ansible/site.yml \
-#       -e "ansible_ssh_common_args='-o StrictHostKeyChecking=no -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedAlgorithms=+ssh-rsa'" -vvvv
-#     EOT
-#   }
-#   depends_on = [null_resource.wait_for_instance]
-# }
+resource "null_resource" "wait_for_instance" {
+  provisioner "local-exec" {
+    command = <<EOT
+    for ip in ${join(" ", aws_instance.compute.*.public_ip)}; do
+      while ! nc -z $ip 22; do
+        echo "Waiting for instance $ip to be reachable..."
+        sleep 5
+      done
+    done
+    echo "All instances are reachable!"
+    EOT
+  }
 
-# resource "null_resource" "run_ansible" {
-#   provisioner "local-exec" {
-#     command = <<EOT
-#       echo "Current Directory: $(pwd)"
-#       echo "Contents of Inventory:"
-#       cat ./ansible/inventory/ansible.ini
-#       echo "Executing Ansible Playbook..."
-#       ansible-playbook -i ./ansible/inventory/ansible.ini ./ansible/site.yml \
-#       -e "ansible_ssh_common_args='-o StrictHostKeyChecking=no -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedAlgorithms=+ssh-rsa'" -vvvv
-#     EOT
-#   }
-#   depends_on = [null_resource.wait_for_instance]
-# }
+  depends_on = [aws_instance.compute]
+}
 
 resource "null_resource" "run_ansible" {
   provisioner "local-exec" {
