@@ -106,25 +106,25 @@ jobs:
         working-directory: ./terraform
         run: terraform apply --var-file=environments/dev.tfvars -lock=false --auto-approve
 
-      # Step 12: Generate Ansible Inventory
-      - name: Generate Ansible Inventory
-        if: github.event_name == 'push'
-        working-directory: ./terraform
-        run: |
-          terraform output -json public_ips | jq -r '.[] | "[monitoring]\n\(. ) ansible_user=ubuntu ansible_ssh_private_key_file=/home/ubuntu/devops1.pem"'
+      # # Step 12: Generate Ansible Inventory
+      # - name: Generate Ansible Inventory
+      #   if: github.event_name == 'push'
+      #   working-directory: ./terraform
+      #   run: |
+      #     terraform output -json public_ips | jq -r '.[] | "[monitoring]\n\(. ) ansible_user=ubuntu ansible_ssh_private_key_file=/home/ubuntu/devops1.pem"'
       
-      # Step 13: Debug Ansible Inventory
-      - name: Debug Ansible Inventory
-        run: cat ../../ansible/inventory/ansible.ini
+      # # Step 13: Debug Ansible Inventory
+      # - name: Debug Ansible Inventory
+      #   run: cat ../../ansible/inventory/ansible.ini
 
-      # Step 14: Clear Ansible SSH Cache
-      - name: Clear Ansible SSH Cache
-        run: rm -rf ~/.ansible/cp
+      # # Step 14: Clear Ansible SSH Cache
+      # - name: Clear Ansible SSH Cache
+      #   run: rm -rf ~/.ansible/cp
 
-      # Step 15: Verify Terraform Outputs
-      - name: Debug Terraform Outputs
-        working-directory: ./terraform
-        run: terraform output public_ips
+      # # Step 15: Verify Terraform Outputs
+      # - name: Debug Terraform Outputs
+      #   working-directory: ./terraform
+      #   run: terraform output public_ips
 
       # Step 16: Trigger Ansible Deployment
       - name: Trigger Ansible Deployment
