@@ -127,6 +127,6 @@ resource "null_resource" "run_ansible" {
   # triggers = {
   #   instance_ids = join(",", aws_instance.compute.*.id)
   #   instance_ips = join(",", aws_instance.compute.*.public_ip)
-  }
+#  }
 }
 
