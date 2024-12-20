@@ -109,7 +109,8 @@ resource "aws_route53_record" "root_record" {
 
 resource "null_resource" "run_ansible" {
   provisioner "local-exec" {
-    command = "ansible-playbook -i ../ansible/inventory/ansible.ini ../ansible/site.yml -vvvv"
+    # command = "ansible-playbook -i ../ansible/inventory/ansible.ini ../ansible/site.yml -vvvv"
+    command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ../ansible/inventory/ansible.ini ../ansible/site.yml -vvvv"
   }
 
   depends_on = [null_resource.wait_for_instance]
