@@ -73,19 +73,19 @@ EOT
 #   depends_on = [aws_instance.compute]
 # }
 
-# resource "null_resource" "wait_for_instance" {
-#   provisioner "remote-exec" {
-#     inline = ["echo 'Instance is ready!'"]
-#     connection {
-#       type        = "ssh"
-#       host        = aws_instance.compute.0.public_ip
-#       user        = "ubuntu"
-#       private_key = file("/home/ubuntu/devops1.pem")
-#     }
-#   }
+resource "null_resource" "wait_for_instance" {
+  provisioner "remote-exec" {
+    inline = ["echo 'Instance is ready!'"]
+    connection {
+      type        = "ssh"
+      host        = aws_instance.compute.0.public_ip
+      user        = "ubuntu"
+      private_key = file("/home/ubuntu/devops1.pem")
+    }
+  }
 
-#   depends_on = [aws_instance.compute]
-# }
+  depends_on = [aws_instance.compute]
+}
 
 
 # Route 53 Records
