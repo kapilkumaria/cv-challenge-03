@@ -119,7 +119,7 @@ resource "aws_route53_record" "root_record" {
 
 resource "null_resource" "run_ansible" {
   provisioner "local-exec" {
-    command = "ansible-playbook -i ${path.root}/ansible/inventory/ansible.ini ${path.root}/ansible/site.yml -vvvv"
+    command = "ansible-playbook -i ansible/inventory/ansible.ini ansible/site.yml -vvvv"
   }
 
   depends_on = [
