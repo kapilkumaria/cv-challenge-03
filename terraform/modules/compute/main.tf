@@ -108,9 +108,9 @@ resource "null_resource" "run_ansible" {
     command = <<EOT
       echo "Current Directory: $(pwd)"
       echo "Contents of Inventory:"
-      cat ../../ansible/inventory/ansible.ini
+      cat ./ansible/inventory/ansible.ini
       echo "Executing Ansible Playbook..."
-      ansible-playbook -i ../../ansible/inventory/ansible.ini ../../ansible/site.yml \
+      ansible-playbook -i ./ansible/inventory/ansible.ini ./ansible/site.yml \
       -e "ansible_ssh_common_args='-o StrictHostKeyChecking=no -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedAlgorithms=+ssh-rsa'" -vvvv
     EOT
   }
