@@ -67,10 +67,26 @@ EOT
 
 resource "null_resource" "wait_for_instance" {
   provisioner "local-exec" {
-    command = "sleep 60"
+    command = <<EOT
+    for ip in ${join(" ", aws_instance.compute.*.public_ip)}; do
+      while ! nc -z $ip 22; do
+        echo "Waiting for instance $ip to be reachable..."
+        sleep 5
+      done
+    done
+    echo "All instances are reachable!"
+    EOT
   }
+
   depends_on = [aws_instance.compute]
 }
+
+# resource "null_resource" "wait_for_instance" {
+#   provisioner "local-exec" {
+#     command = "sleep 60"
+#   }
+#   depends_on = [aws_instance.compute]
+# }
 
 # Route 53 Records
 resource "aws_route53_record" "www_record" {
@@ -88,22 +104,6 @@ resource "aws_route53_record" "root_record" {
   type    = "A"
   ttl     = "300"
   records = [aws_instance.compute.0.public_ip]
-  depends_on = [aws_instance.compute]
-}
-
-resource "null_resource" "wait_for_instance" {
-  provisioner "local-exec" {
-    command = <<EOT
-    for ip in ${join(" ", aws_instance.compute.*.public_ip)}; do
-      while ! nc -z $ip 22; do
-        echo "Waiting for instance $ip to be reachable..."
-        sleep 5
-      done
-    done
-    echo "All instances are reachable!"
-    EOT
-  }
-
   depends_on = [aws_instance.compute]
 }
 
