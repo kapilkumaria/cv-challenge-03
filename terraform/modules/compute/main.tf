@@ -117,13 +117,13 @@ resource "aws_route53_record" "root_record" {
 #   depends_on = [null_resource.wait_for_instance]
 # }
 
-resource "null_resource" "run_ansible" {
-  provisioner "local-exec" {
-    command = "ansible-playbook -i ${path.root}/ansible/inventory/ansible.ini ${path.root}/ansible/site.yml -vvvv"
-  }
+# resource "null_resource" "run_ansible" {
+#   provisioner "local-exec" {
+#     command = "ansible-playbook -i ${path.root}/ansible/inventory/ansible.ini ${path.root}/ansible/site.yml -vvvv"
+#   }
 
-  depends_on = [
-    null_resource.wait_for_instance
-  ]
-}
+#   depends_on = [
+#     null_resource.wait_for_instance
+#   ]
+# }
 
