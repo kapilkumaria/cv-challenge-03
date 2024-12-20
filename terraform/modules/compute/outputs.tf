@@ -8,7 +8,7 @@ output "instance_ids" {
   value       = aws_instance.compute[*].id
 }
 
-output "public_ips" {
+output "public_ips_old" {
   description = "List of public IPs of the EC2 instances"
   value       = aws_instance.compute[*].public_ip
 }
@@ -16,4 +16,8 @@ output "public_ips" {
 output "private_ips" {
   description = "List of private IPs of the EC2 instances"
   value       = aws_instance.compute[*].private_ip
+}
+
+output "public_ips" {
+  value = aws_instance.compute.*.public_ip
 }
