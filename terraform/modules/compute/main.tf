@@ -93,7 +93,7 @@ resource "null_resource" "run_ansible" {
   provisioner "local-exec" {
     command = <<EOT
       ansible-playbook -i ../../ansible/inventory/ansible.ini ../../ansible/site.yml \
-      -e "ansible_ssh_common_args='-o StrictHostKeyChecking=no -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedAlgorithms=+ssh-rsa'" -vvv
+      -e "ansible_ssh_common_args='-o StrictHostKeyChecking=no -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedAlgorithms=+ssh-rsa'" -vvvvvv
     EOT
   }
   depends_on = [null_resource.wait_for_instance]  
