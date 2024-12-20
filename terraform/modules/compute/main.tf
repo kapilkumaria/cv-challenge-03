@@ -124,9 +124,9 @@ resource "null_resource" "run_ansible" {
 
   depends_on = [null_resource.wait_for_instance]
 
-  triggers = {
-    instance_ids = join(",", aws_instance.compute.*.id)
-    instance_ips = join(",", aws_instance.compute.*.public_ip)
-  }
+  # triggers = {
+  #   instance_ids = join(",", aws_instance.compute.*.id)
+  #   instance_ips = join(",", aws_instance.compute.*.public_ip)
+#  }
 }
 
