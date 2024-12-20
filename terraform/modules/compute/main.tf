@@ -65,22 +65,6 @@ EOT
   depends_on = [aws_instance.compute]
 }
 
-# resource "null_resource" "wait_for_instance" {
-#   provisioner "local-exec" {
-#     command = <<EOT
-#     for ip in ${join(" ", aws_instance.compute.*.public_ip)}; do
-#       while ! nc -z $ip 22; do
-#         echo "Waiting for instance $ip to be reachable..."
-#         sleep 5
-#       done
-#     done
-#     echo "All instances are reachable!"
-#     EOT
-#   }
-
-#   depends_on = [aws_instance.compute]
-# }
-
 resource "null_resource" "wait_for_instance" {
   provisioner "local-exec" {
     command = "sleep 60"
@@ -107,16 +91,6 @@ resource "aws_route53_record" "root_record" {
   depends_on = [aws_instance.compute]
 }
 
-# resource "null_resource" "run_ansible" {
-#   provisioner "local-exec" {
-#     command = "ansible-playbook -i ../ansible/inventory/ansible.ini ../ansible/site.yml -vvvv"
-#   }
-
-#   depends_on = [
-#     null_resource.wait_for_instance
-#   ]
-# }
-
 resource "null_resource" "run_ansible" {
   provisioner "local-exec" {
     command = "ansible-playbook -i ../ansible/inventory/ansible.ini ../ansible/site.yml -vvvv"
@@ -124,9 +98,9 @@ resource "null_resource" "run_ansible" {
 
   depends_on = [null_resource.wait_for_instance]
 
-  # triggers = {
-  #   instance_ids = join(",", aws_instance.compute.*.id)
-  #   instance_ips = join(",", aws_instance.compute.*.public_ip)
-#  }
+  triggers = {
+    instance_ids = join(",", aws_instance.compute.*.id)
+    instance_ips = join(",", aws_instance.compute.*.public_ip)
+ }
 }
 
