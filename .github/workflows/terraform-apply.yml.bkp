@@ -106,26 +106,13 @@ jobs:
         working-directory: ./terraform
         run: terraform apply --var-file=environments/dev.tfvars -lock=false --auto-approve
 
-      # Step 12: Generate Ansible Inventory
-      - name: Generate Ansible Inventory
-        if: github.event_name == 'push'
-        working-directory: ./terraform
-        run: |
-          terraform output -json public_ips | jq -r '.[] | "[monitoring]\n" + . + " ansible_user=ubuntu ansible_ssh_private_key_file=/home/ubuntu/devops1.pem\n"' > ./ansible/inventory/ansible.ini
-
-      # Step 13: Upload Ansible Inventory as Artifact
-      - name: Upload Ansible Inventory
-        uses: actions/upload-artifact@v3
-        with:
-          name: ansible-inventory
-          path: ./ansible/inventory/ansible.ini
-
-      # Step 14: Check Python  
+      # Step 12: Check Python  
       - name: Check Python
         run: python3 --version
 
-      # Step 15: Trigger Ansible Deployment
+      # Step 13:
       - name: Trigger Ansible Deployment
         if: github.event_name == 'push'
         run: |          
           ansible-playbook -i ./ansible/inventory/ansible.ini ./ansible/site.yml -vvvv
+# ansible-playbook -i ansible/inventory/ansible.ini ansible/site.yml -e ansible_ssh_common_args='-o StrictHostKeyChecking=no -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedAlgorithms=+ssh-rsa' -vvvv
