@@ -89,10 +89,23 @@ resource "aws_route53_record" "root_record" {
   depends_on = [aws_instance.compute]
 }
 
+# # Trigger Ansible Playbook After Terraform Deployment
+# resource "null_resource" "run_ansible" {
+#   provisioner "local-exec" {
+#     command = "ansible-playbook -i ./ansible/inventory/ansible.ini ./ansible/site.yml \
+#   -e "ansible_ssh_common_args='-o StrictHostKeyChecking=no -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedAlgorithms=+ssh-rsa'" -vvv
+
+#     #command = "ansible-playbook -i ../ansible/inventory/ansible.ini ../ansible/site.yml"
+#   }
+#   depends_on = [null_resource.wait_for_instance]
+#   #depends_on = [aws_instance.compute, local_file.ansible_inventory]
+# }
+
 # Trigger Ansible Playbook After Terraform Deployment
 resource "null_resource" "run_ansible" {
   provisioner "local-exec" {
-    command = "ansible-playbook -i ../ansible/inventory/ansible.ini ../ansible/site.yml"
+    command = "ansible-playbook -i ./ansible/inventory/ansible.ini ./ansible/site.yml \
+  -e "ansible_ssh_common_args='-o StrictHostKeyChecking=no -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedAlgorithms=+ssh-rsa'" -vvv
   }
   depends_on = [null_resource.wait_for_instance]
   #depends_on = [aws_instance.compute, local_file.ansible_inventory]
