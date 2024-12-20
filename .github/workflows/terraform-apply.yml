@@ -147,4 +147,4 @@ jobs:
       - name: Trigger Ansible Deployment
         if: github.event_name == 'push'
         run: |          
-          ansible-playbook -i ../../ansible/inventory/ansible.ini ../../ansible/site.yml -e ansible_ssh_common_args='-o StrictHostKeyChecking=no -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedAlgorithms=+ssh-rsa' -vvvv
+          ansible-playbook -i ansible/inventory/ansible.ini ansible/site.yml -e ansible_ssh_common_args='-o StrictHostKeyChecking=no -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedAlgorithms=+ssh-rsa' -vvvv
