@@ -49,8 +49,55 @@ jobs:
       - name: Terraform Plan
         working-directory: ./terraform
         run: terraform plan -out=tfplan --var-file=environments/dev.tfvars -lock=false
-        
-      # Step 8: Display Terraform Plan
-      - name: Display Terraform Plan
+
+      # Step 7: Convert Plan to JSON  
+      - name: Convert Plan to JSON
+        if: github.event_name == 'pull_request'
         working-directory: ./terraform
-        run: terraform show -no-color tfplan
+        run: terraform show -json tfplan > tfplan.json
+
+      # Step 8: Setup InfraCost    
+      - name: Setup InfraCost
+        if: github.event_name == 'pull_request'
+        uses: infracost/actions/setup@v2
+        with:
+          api-key: ${{ secrets.INFRACOST_API_KEY }}
+
+      # Step 9:     
+      - name: Generate Cost Estimation
+        if: github.event_name == 'pull_request'
+        working-directory: ./terraform
+        run: |
+          infracost breakdown --path=tfplan.json --format=json --out-file=infracost.json --format=table
+          cat infracost.json
+
+      # Step 10:      
+      - name: Comment on PR with Cost Estimation
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const fs = require('fs');
+            const planOutput = fs.readFileSync('./terraform/tfplan.json', 'utf8');
+            const costOutput = fs.readFileSync('./terraform/infracost.json', 'utf8');
+            github.rest.issues.createComment({
+              issue_number: context.payload.pull_request.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `
+              ### Terraform Plan
+              \`\`\`json
+              ${planOutput}
+              \`\`\`
+              ### Cost Estimation
+              \`\`\`json
+              ${costOutput}
+              \`\`\`
+              `
+            });
+
+        
+      # # Step 8: Display Terraform Plan
+      # - name: Display Terraform Plan
+      #   working-directory: ./terraform
+      #   run: terraform show -no-color tfplan

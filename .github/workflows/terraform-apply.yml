@@ -100,11 +100,11 @@ jobs:
               `
             });
 
-      # Step 11: Post-merge steps (push event)
-      - name: Terraform Apply
-        if: github.event_name == 'push'
-        working-directory: ./terraform
-        run: terraform apply --var-file=environments/dev.tfvars -lock=false --auto-approve
+      # # Step 11: Post-merge steps (push event)
+      # - name: Terraform Apply
+      #   if: github.event_name == 'push'
+      #   working-directory: ./terraform
+      #   run: terraform apply --var-file=environments/dev.tfvars -lock=false --auto-approve
 
       # # Step 12: Generate Ansible Inventory
       # - name: Generate Ansible Inventory
