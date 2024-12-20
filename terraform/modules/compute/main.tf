@@ -89,14 +89,28 @@ resource "aws_route53_record" "root_record" {
   depends_on = [aws_instance.compute]
 }
 
+# resource "null_resource" "run_ansible" {
+#   provisioner "local-exec" {
+#     command = <<EOT
+#       echo "Current Directory: $(pwd)"
+#       echo "Contents of Inventory:"
+#       cat ../../ansible/inventory/ansible.ini
+#       echo "Executing Ansible Playbook..."
+#       ansible-playbook -i ../../ansible/inventory/ansible.ini ../../ansible/site.yml \
+#       -e "ansible_ssh_common_args='-o StrictHostKeyChecking=no -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedAlgorithms=+ssh-rsa'" -vvvv
+#     EOT
+#   }
+#   depends_on = [null_resource.wait_for_instance]
+# }
+
 resource "null_resource" "run_ansible" {
   provisioner "local-exec" {
     command = <<EOT
       echo "Current Directory: $(pwd)"
       echo "Contents of Inventory:"
-      cat ../../ansible/inventory/ansible.ini
+      cat ${path.root}/ansible/inventory/ansible.ini
       echo "Executing Ansible Playbook..."
-      ansible-playbook -i ../../ansible/inventory/ansible.ini ../../ansible/site.yml \
+      ansible-playbook -i ${path.root}/ansible/inventory/ansible.ini ${path.root}/ansible/site.yml \
       -e "ansible_ssh_common_args='-o StrictHostKeyChecking=no -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedAlgorithms=+ssh-rsa'" -vvvv
     EOT
   }
