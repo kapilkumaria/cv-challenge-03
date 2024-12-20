@@ -57,7 +57,7 @@ resource "local_file" "ansible_inventory" {
   content = <<EOT
 [monitoring]
 %{ for ip in aws_instance.compute.*.public_ip ~}
-${ip} ansible_user=ubuntu ansible_ssh_private_key_file=~/devops1.pem
+${ip} ansible_user=ubuntu ansible_ssh_private_key_file=/home/ubuntu/devops1.pem
 %{ endfor }
 EOT
   filename = "${path.module}/../../../ansible/inventory/ansible.ini"
