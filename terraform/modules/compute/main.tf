@@ -63,6 +63,7 @@ EOT
   # filename = "${path.module}/../../../ansible/inventory/ansible.ini"
   #filename = "../../ansible/inventory/ansible.ini"
   filename = "../../../ansible/inventory/ansible.ini"
+  # filename = "../ansible/inventory/ansible.ini"
   # filename = "./ansible/inventory/ansible.ini"
   depends_on = [aws_instance.compute]
 }
