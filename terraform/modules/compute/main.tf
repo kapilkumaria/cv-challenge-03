@@ -62,7 +62,7 @@ ${ip} ansible_user=ubuntu ansible_ssh_private_key_file=/home/ubuntu/devops1.pem
 EOT
   # filename = "${path.module}/../../../ansible/inventory/ansible.ini"
   #filename = "../../ansible/inventory/ansible.ini"
-  filename = "../../../ansible/inventory/ansible.ini"
+  filename = "../ansible/inventory/ansible.ini"
   # filename = "../ansible/inventory/ansible.ini"
   # filename = "./ansible/inventory/ansible.ini"
   depends_on = [aws_instance.compute]
