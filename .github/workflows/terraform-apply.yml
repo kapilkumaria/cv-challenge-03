@@ -111,7 +111,14 @@ jobs:
         if: github.event_name == 'push'
         working-directory: ./terraform
         run: |
-          terraform output -json public_ips | jq -r '.[] | "[monitoring]\n" + . + " ansible_user=ubuntu ansible_ssh_private_key_file=/home/ubuntu/devops1.pem\n"' > ../../../ansible/inventory/ansible.ini
+          terraform output -json public_ips | jq -r '.[] | "[monitoring]\n\(. ) ansible_user=ubuntu ansible_ssh_private_key_file=/home/ubuntu/devops1.pem"'
+
+      # # Step 12: Generate Ansible Inventory
+      # - name: Generate Ansible Inventory
+      #   if: github.event_name == 'push'
+      #   working-directory: ./terraform
+      #   run: |
+      #     terraform output -json public_ips | jq -r '.[] | "[monitoring]\n" + . + " ansible_user=ubuntu ansible_ssh_private_key_file=/home/ubuntu/devops1.pem\n"' > ../../../ansible/inventory/ansible.ini
 
       # Step 13: Debug Ansible Inventory
       - name: Debug Ansible Inventory
