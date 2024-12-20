@@ -129,5 +129,6 @@ jobs:
       # Step 16: Trigger Ansible Deployment
       - name: Trigger Ansible Deployment
         if: github.event_name == 'push'
+        working-directory: ./ansible
         run: |          
-          ansible-playbook -i ../../../ansible/inventory/ansible.ini ./ansible/site.yml -vvvv
+          ansible-playbook -i ./ansible/inventory/ansible.ini ./ansible/site.yml -vvvv
