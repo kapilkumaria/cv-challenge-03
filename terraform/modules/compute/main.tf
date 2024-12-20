@@ -92,7 +92,7 @@ resource "aws_route53_record" "root_record" {
 # Trigger Ansible Playbook After Terraform Deployment
 resource "null_resource" "run_ansible" {
   provisioner "local-exec" {
-    command = "ansible-playbook -i ../ansible/inventory/ansible.ini ../ansible/site.yml"
+    command = "ansible-playbook -i ../ansible/inventory/ansible.ini ../ansible/site.yml -vvv"
   }
   depends_on = [null_resource.wait_for_instance]  
 }
