@@ -46,18 +46,18 @@ jobs:
         docker push kappu1512/frontend:${{ github.sha }}
         docker push kappu1512/frontend:latest
 
-    # Step 6: Update docker-compose.yml with New Image Tags
-    - name: Update docker-compose.yml
-      working-directory: ./source/application
-      run: |
-        sed -i 's|image: kappu1512/backend:.*|image: kappu1512/backend:${{ github.sha }}|' docker-compose.yml
-        sed -i 's|image: kappu1512/frontend:.*|image: kappu1512/frontend:${{ github.sha }}|' docker-compose.yml
+    # # Step 6: Update docker-compose.yml with New Image Tags
+    # - name: Update docker-compose.yml
+    #   working-directory: ./source/application
+    #   run: |
+    #     sed -i 's|image: kappu1512/backend:.*|image: kappu1512/backend:${{ github.sha }}|' docker-compose.yml
+    #     sed -i 's|image: kappu1512/frontend:.*|image: kappu1512/frontend:${{ github.sha }}|' docker-compose.yml
 
-    # Step 7: Commit and Push Changes to Integration Branch
-    - name: Commit and Push Changes
-      run: |
-        git config --local user.name "GitHub Actions"
-        git config --local user.email "actions@github.com"
-        git add ./source/application/docker-compose.yml
-        git commit -m "Update docker-compose.yml with new image tags"
-        git push origin integration
+    # # Step 7: Commit and Push Changes to Integration Branch
+    # - name: Commit and Push Changes
+    #   run: |
+    #     git config --local user.name "GitHub Actions"
+    #     git config --local user.email "actions@github.com"
+    #     git add ./source/application/docker-compose.yml
+    #     git commit -m "Update docker-compose.yml with new image tags"
+    #     git push origin integration
