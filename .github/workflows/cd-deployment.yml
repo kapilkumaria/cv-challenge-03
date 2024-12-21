@@ -1,0 +1,48 @@
+name: CD - Deployment
+
+on:
+  push:
+    branches:
+      - deployment
+
+jobs:
+  deploy_application:
+    runs-on: self-hosted
+
+    steps:
+    # Step 1: Checkout the code
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # Step 2: Log in to the Target Server
+    - name: SSH to Target Server
+      uses: appleboy/ssh-action@v0.1.5
+      with:
+        host: ${{ secrets.TARGET_SERVER_HOST }}
+        username: ${{ secrets.TARGET_SERVER_USER }}
+        key: ${{ secrets.TARGET_SERVER_SSH_KEY }}
+        port: 22
+
+    # Step 3: Pull Docker Images on the Target Server
+    - name: Pull Docker Images
+      run: |
+        ssh ${{ secrets.TARGET_SERVER_USER }}@${{ secrets.TARGET_SERVER_HOST }} << EOF
+          docker pull kappu1512/frontend:latest
+          docker pull kappu1512/backend:latest
+        EOF
+
+    # Step 4: Deploy Application Using Docker Compose
+    - name: Deploy with Docker Compose
+      run: |
+        ssh ${{ secrets.TARGET_SERVER_USER }}@${{ secrets.TARGET_SERVER_HOST }} << EOF
+          cd /source/application
+          docker-compose down
+          docker-compose up -d
+        EOF
+
+    # Step 5: Health Check (Optional)
+    - name: Run Health Check
+      run: |
+        ssh ${{ secrets.TARGET_SERVER_USER }}@${{ secrets.TARGET_SERVER_HOST }} << EOF
+          curl -f http://localhost:80 || exit 1
+        EOF
