@@ -46,7 +46,7 @@ jobs:
         docker push kappu1512/frontend:${{ github.sha }}
         docker push kappu1512/frontend:latest
 
-    # # Step 6: Update docker-compose.yml with New Image Tags
+    # # Step 6: Update docker-compose.yml with New Image Tag
     # - name: Update docker-compose.yml
     #   working-directory: ./source/application
     #   run: |
