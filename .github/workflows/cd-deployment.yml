@@ -41,7 +41,7 @@ jobs:
     
           # Clone the repository
           if [ ! -d "~/cv-challenge-03" ]; then
-            git clone -b integration https://github.com/kappu1512/cv-challenge-03.git ~/cv-challenge-03
+            git clone -b integration https://github.com/kapilkumaria/cv-challenge-03.git ~/cv-challenge-03
           else
             echo "Repository already cloned. Pulling latest changes."
             cd ~/cv-challenge-03
