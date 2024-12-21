@@ -33,11 +33,11 @@ jobs:
         with:
           terraform_version: 1.5.0
 
-      # # Step 4: Setup NodeJS    
-      # - name: Setup Node.js
-      #   uses: actions/setup-node@v2
-      #   with:
-      #     node-version: '14'
+      # Step 4: Setup NodeJS    
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
 
       # Step 5: Terraform Init
       - name: Terraform Init
