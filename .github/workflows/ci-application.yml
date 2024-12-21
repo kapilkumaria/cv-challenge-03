@@ -25,8 +25,8 @@ jobs:
     - name: Build Backend Docker Image
       working-directory: ./source/backend
       run: |
-        docker build -t your-dockerhub-username/backend:${{ github.sha }} .
-        docker tag your-dockerhub-username/backend:${{ github.sha }} your-dockerhub-username/backend:latest
+        docker build -t kappu1512/backend:${{ github.sha }} .
+        docker tag kappu1512/backend:${{ github.sha }} your-dockerhub-username/backend:latest
 
     # Step 4: Build and Tag Docker Image for Frontend
     - name: Build Frontend Docker Image
@@ -38,20 +38,20 @@ jobs:
     # Step 5: Push Backend and Frontend Docker Images
     - name: Push Backend Docker Image
       run: |
-        docker push your-dockerhub-username/backend:${{ github.sha }}
-        docker push your-dockerhub-username/backend:latest
+        docker push kappu1512/backend:${{ github.sha }}
+        docker push kappu1512/backend:latest
 
     - name: Push Frontend Docker Image
       run: |
-        docker push your-dockerhub-username/frontend:${{ github.sha }}
-        docker push your-dockerhub-username/frontend:latest
+        docker push kappu1512/frontend:${{ github.sha }}
+        docker push kappu1512/frontend:latest
 
     # Step 6: Update docker-compose.yml with New Image Tags
     - name: Update docker-compose.yml
       working-directory: ./source/application
       run: |
-        sed -i 's|image: your-dockerhub-username/backend:.*|image: your-dockerhub-username/backend:${{ github.sha }}|' docker-compose.yml
-        sed -i 's|image: your-dockerhub-username/frontend:.*|image: your-dockerhub-username/frontend:${{ github.sha }}|' docker-compose.yml
+        sed -i 's|image: kappu1512/backend:.*|image: kappu1512/backend:${{ github.sha }}|' docker-compose.yml
+        sed -i 's|image: kappu1512/frontend:.*|image: kappu1512/frontend:${{ github.sha }}|' docker-compose.yml
 
     # Step 7: Commit and Push Changes to Integration Branch
     - name: Commit and Push Changes
