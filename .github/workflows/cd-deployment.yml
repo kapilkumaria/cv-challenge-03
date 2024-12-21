@@ -33,11 +33,11 @@ jobs:
         key: ${{ secrets.TARGET_SERVER_SSH_KEY }}
         port: 22
         script: |
-          export GITHUB_PAT=${{ secrets.GITHUB_PAT }}
+          export GITHUB_PAT=${{ secrets.MY_GITHUB_PAT }}
           
           # Set up Git credentials
           git config --global credential.helper store
-          echo "https://${GITHUB_PAT}:@github.com" > ~/.git-credentials
+          echo "https://${MY_GITHUB_PAT}:@github.com" > ~/.git-credentials
     
           # Clone the repository
           if [ ! -d "~/cv-challenge-03" ]; then
