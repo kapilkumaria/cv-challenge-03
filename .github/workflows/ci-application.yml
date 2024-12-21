@@ -60,4 +60,4 @@ jobs:
     #     git config --local user.email "actions@github.com"
     #     git add ./source/application/docker-compose.yml
     #     git commit -m "Update docker-compose.yml with new image tags"
-    #     git push origin integration
+    #     git push origin integrations
