@@ -14,7 +14,24 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    # Step 2: Install Docker Compose on the Target Server
+    # Step 2: Clone Repository on Target Server
+    - name: Clone Repository
+      uses: appleboy/ssh-action@v0.1.5
+      with:
+        host: ${{ secrets.TARGET_SERVER_HOST }}
+        username: ${{ secrets.TARGET_SERVER_USER }}
+        key: ${{ secrets.TARGET_SERVER_SSH_KEY }}
+        port: 22
+        script: |
+          if [ ! -d "~/cv-challenge-03" ]; then
+            git clone https://github.com/your-username/cv-challenge-03.git ~/cv-challenge-03
+          else
+            echo "Repository already cloned. Pulling latest changes."
+            cd ~/cv-challenge-03
+            git pull
+          fi
+
+    # Step 3: Install Docker Compose on the Target Server
     - name: Install Docker Compose
       uses: appleboy/ssh-action@v0.1.5
       with:
@@ -33,7 +50,7 @@ jobs:
           fi
           docker-compose --version
 
-    # Step 3: Pull Docker Images on the Target Server
+    # Step 4: Pull Docker Images on the Target Server
     - name: Pull Docker Images
       uses: appleboy/ssh-action@v0.1.5
       with:
@@ -46,7 +63,7 @@ jobs:
           docker pull kappu1512/frontend:latest
           docker pull kappu1512/backend:latest
 
-    # Step 4: Deploy Application Using Docker Compose
+    # Step 5: Deploy Application Using Docker Compose
     - name: Deploy with Docker Compose
       uses: appleboy/ssh-action@v0.1.5
       with:
@@ -55,11 +72,11 @@ jobs:
         key: ${{ secrets.TARGET_SERVER_SSH_KEY }}
         port: 22
         script: |
-          cd ./source/application
+          cd ~/cv-challenge-03/source/application
           docker-compose down
           docker-compose up -d
 
-    # Step 5: Health Check
+    # Step 6: Health Check
     - name: Run Health Check
       uses: appleboy/ssh-action@v0.1.5
       with:
@@ -69,108 +86,3 @@ jobs:
         port: 22
         script: |
           curl -f http://localhost:80 || exit 1
-
-
-
-
-# name: CD - Deployment
-
-# on:
-#   push:
-#     branches:
-#       - deployment
-
-# jobs:
-#   deploy_application:
-#     runs-on: self-hosted
-
-#     steps:
-#     # Step 1: Checkout the code
-#     - name: Checkout codes
-#       uses: actions/checkout@v3
-
-#     # Step 2: Log in to the Target Server
-#     - name: SSH to Target Server
-#       uses: appleboy/ssh-action@v0.1.5
-#       with:
-#         host: ${{ secrets.TARGET_SERVER_HOST }}
-#         username: ${{ secrets.TARGET_SERVER_USER }}
-#         key: ${{ secrets.TARGET_SERVER_SSH_KEY }}
-#         port: 22
-
-#     # Step 3: Pull Docker Images on the Target Server
-#     - name: Pull Docker Images
-#       run: |
-#         ssh ${{ secrets.TARGET_SERVER_USER }}@${{ secrets.TARGET_SERVER_HOST }} << EOF
-#           docker pull kappu1512/frontend:latest
-#           docker pull kappu1512/backend:latest
-#         EOF
-
-#     # Step 4: Deploy Application Using Docker Compose
-#     - name: Deploy with Docker Compose
-#       run: |
-#         ssh ${{ secrets.TARGET_SERVER_USER }}@${{ secrets.TARGET_SERVER_HOST }} << EOF
-#           cd /source/application
-#           docker-compose down
-#           docker-compose up -d
-#         EOF
-
-#     # Step 5: Health Check (Optional)
-#     - name: Run Health Check
-#       run: |
-#         ssh ${{ secrets.TARGET_SERVER_USER }}@${{ secrets.TARGET_SERVER_HOST }} << EOF
-#           curl -f http://localhost:80 || exit 1
-#         EOF
-
-# name: CD - Deployment
-
-# on:
-#   push:
-#     branches:
-#       - deployment
-
-# jobs:
-#   deploy_application:
-#     runs-on: self-hosted
-
-#     steps:
-#     # Step 1: Checkout the code
-#     - name: Checkout code
-#       uses: actions/checkout@v3
-
-#     # Step 2: Pull Docker Images on the Target Server
-#     - name: Pull Docker Images
-#       uses: appleboy/ssh-action@v0.1.5
-#       with:
-#         host: ${{ secrets.TARGET_SERVER_HOST }}
-#         username: ${{ secrets.TARGET_SERVER_USER }}
-#         key: ${{ secrets.TARGET_SERVER_SSH_KEY }}
-#         port: 22
-#         script: |
-#           echo ${{ secrets.DOCKER_PASSWORD }} | docker login --username ${{ secrets.DOCKER_USERNAME }} --password-stdin
-#           docker pull kappu1512/frontend:latest
-#           docker pull kappu1512/backend:latest
-
-#     # Step 3: Deploy Application Using Docker Compose
-#     - name: Deploy with Docker Compose
-#       uses: appleboy/ssh-action@v0.1.5
-#       with:
-#         host: ${{ secrets.TARGET_SERVER_HOST }}
-#         username: ${{ secrets.TARGET_SERVER_USER }}
-#         key: ${{ secrets.TARGET_SERVER_SSH_KEY }}
-#         port: 22
-#         script: |
-#           cd ./source/application
-#           docker-compose down
-#           docker-compose up -d
-
-#     # Step 4: Health Check
-#     - name: Run Health Check
-#       uses: appleboy/ssh-action@v0.1.5
-#       with:
-#         host: ${{ secrets.TARGET_SERVER_HOST }}
-#         username: ${{ secrets.TARGET_SERVER_USER }}
-#         key: ${{ secrets.TARGET_SERVER_SSH_KEY }}
-#         port: 22
-#         script: |
-#           curl -f http://localhost:80 || exit 1
