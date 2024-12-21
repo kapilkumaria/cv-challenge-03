@@ -33,11 +33,11 @@ jobs:
         with:
           terraform_version: 1.5.0
 
-      # Step 4: Setup NodeJS    
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '14'
+      # # Step 4: Setup NodeJS    
+      # - name: Setup Node.js
+      #   uses: actions/setup-node@v2
+      #   with:
+      #     node-version: '14'
 
       # Step 5: Terraform Init
       - name: Terraform Init
@@ -96,3 +96,50 @@ jobs:
               \`\`\`
               `
             });
+
+      # Post-merge steps (push event)
+      - name: Terraform Apply
+        if: github.event_name == 'push'
+        working-directory: ./terraform
+        run: terraform apply --var-file=environments/dev.tfvars -lock=false --auto-approve
+
+      - name: Check Python
+        run: python3 --version
+
+      - name: Debug Inventory File
+        run: cat ansible/inventory/ansible.ini  
+
+      - name: Set up SSH Key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" | base64 -d > ~/.ssh/devops1.pem
+          chmod 600 ~/.ssh/devops1.pem
+          ls -l ~/.ssh # Debug to ensure the key exists
+  
+      - name: Add SSH Host Key
+        run: |
+          ssh-keyscan -H 98.81.188.239 >> ~/.ssh/known_hosts
+          ls -l ~/.ssh # Debug to confirm known_hosts
+
+      - name: Debug SSH Setup
+        run: |
+          ls -l ~/.ssh
+          cat ~/.ssh/known_hosts
+
+      - name: Debug SSH Connection
+        run: |
+            ssh -i ~/.ssh/devops1.pem -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedAlgorithms=+ssh-rsa -o StrictHostKeyChecking=no ubuntu@98.81.188.239 "echo Debugging SSH connection"
+        env:
+            ANSIBLE_HOST_KEY_CHECKING: false
+        
+
+      - name: Test SSH Connection
+        run: |
+            ssh -i /home/runner/.ssh/devops1.pem -o StrictHostKeyChecking=no ubuntu@98.81.188.239 "echo SSH connection successful!"
+     
+      
+      - name: Trigger Ansible Deployment
+        if: github.event_name == 'push'
+        run: |
+          
+          ansible-playbook -i ./ansible/inventory/ansible.ini ./ansible/site.yml -e ansible_ssh_common_args='-o StrictHostKeyChecking=no -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedAlgorithms=+ssh-rsa' -vvv
