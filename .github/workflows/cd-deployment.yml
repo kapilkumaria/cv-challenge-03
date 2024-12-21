@@ -85,7 +85,7 @@ jobs:
         key: ${{ secrets.TARGET_SERVER_SSH_KEY }}
         port: 22
         script: |
-          cd /source/application
+          cd ./source/application
           docker-compose down
           docker-compose up -d
 
