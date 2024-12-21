@@ -3,8 +3,7 @@ name: Terraform Plan with Cost Estimation
 on:
   pull_request:
     branches:
-      - infra_main
-  # workflow_dispatch:  # Allow manual trigger
+      - infra_main  
 
 jobs:
   plan:
@@ -95,9 +94,3 @@ jobs:
               \`\`\`
               `
             });
-
-        
-      # # Step 8: Display Terraform Plan
-      # - name: Display Terraform Plan
-      #   working-directory: ./terraform
-      #   run: terraform show -no-color tfplan
