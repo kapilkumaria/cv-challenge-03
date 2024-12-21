@@ -1,0 +1,8 @@
+---
+- name: Deploy all services
+  hosts: all
+  become: true
+  roles:
+    - role: application # Deploy backend and frontend
+    - role: traefik # Deploy Traefik
+    - role: nginx   # Deploy Nginx
