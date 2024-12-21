@@ -15,6 +15,7 @@ jobs:
       uses: actions/checkout@v3
 
 
+
     - name: Clone Repository
       uses: appleboy/ssh-action@v0.1.5
       with:
@@ -23,13 +24,32 @@ jobs:
         key: ${{ secrets.TARGET_SERVER_SSH_KEY }}
         port: 22
         script: |
-            if [ ! -d "~/cv-challenge-03" ]; then
-              git clone -b integration https://${{ secrets.GITHUB_PAT }}@github.com/kappu1512/cv-challenge-03.git ~/cv-challenge-03
-            else
-              echo "Repository already cloned. Pulling latest changes."
-              cd ~/cv-challenge-03
-              git pull
-            fi
+          export GITHUB_PAT=${{ secrets.GITHUB_PAT }}
+          if [ ! -d "~/cv-challenge-03" ]; then
+            echo "Cloning the repository..."
+            git clone -b integration https://$GITHUB_PAT@github.com/kappu1512/cv-challenge-03.git ~/cv-challenge-03
+          else
+            echo "Repository already cloned. Pulling latest changes."
+            cd ~/cv-challenge-03
+            git pull
+          fi
+        
+
+    # - name: Clone Repository
+    #   uses: appleboy/ssh-action@v0.1.5
+    #   with:
+    #     host: ${{ secrets.TARGET_SERVER_HOST }}
+    #     username: ${{ secrets.TARGET_SERVER_USER }}
+    #     key: ${{ secrets.TARGET_SERVER_SSH_KEY }}
+    #     port: 22
+    #     script: |
+    #         if [ ! -d "~/cv-challenge-03" ]; then
+    #           git clone -b integration https://${{ secrets.GITHUB_PAT }}@github.com/kappu1512/cv-challenge-03.git ~/cv-challenge-03
+    #         else
+    #           echo "Repository already cloned. Pulling latest changes."
+    #           cd ~/cv-challenge-03
+    #           git pull
+    #         fi
       
     # # Step 2: Clone Repository on Target Server
     # - name: Clone Repository
