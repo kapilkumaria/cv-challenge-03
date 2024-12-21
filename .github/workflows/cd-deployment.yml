@@ -17,7 +17,7 @@ jobs:
     - name: Debug Secrets
       run: |
         echo "Testing Secrets"
-        if [ -z "${{ secrets.GITHUB_PAT }}" ]; then
+        if [ -z "${{ secrets.MY_GITHUB_PAT }}" ]; then
           echo "GITHUB_PAT is not available!"
           exit 1
         else
