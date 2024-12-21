@@ -43,7 +43,7 @@ jobs:
     #       if [ ! -d "~/cv-challenge-03" ]; then
     #         git clone https://github.com/your-username/cv-challenge-03.git ~/cv-challenge-03
     #       else
-    #         echo "Repository already cloned. Pulling latest changes."
+    #         echo "Repository already cloned. Pulling latest change."
     #         cd ~/cv-challenge-03
     #         git pull
     #       fi
