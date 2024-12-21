@@ -32,8 +32,8 @@ jobs:
     - name: Build Frontend Docker Image
       working-directory: ./source/frontend
       run: |
-        docker build -t your-dockerhub-username/frontend:${{ github.sha }} .
-        docker tag your-dockerhub-username/frontend:${{ github.sha }} your-dockerhub-username/frontend:latest
+        docker build -t kappu1512/frontend:${{ github.sha }} .
+        docker tag kappu1512/frontend:${{ github.sha }} your-dockerhub-username/frontend:latest
 
     # Step 5: Push Backend and Frontend Docker Images
     - name: Push Backend Docker Image
