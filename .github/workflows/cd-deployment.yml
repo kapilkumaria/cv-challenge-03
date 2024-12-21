@@ -14,7 +14,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    # Step 2: Clone Repository on Target Server
+
     - name: Clone Repository
       uses: appleboy/ssh-action@v0.1.5
       with:
@@ -23,13 +23,30 @@ jobs:
         key: ${{ secrets.TARGET_SERVER_SSH_KEY }}
         port: 22
         script: |
-          if [ ! -d "~/cv-challenge-03" ]; then
-            git clone https://github.com/your-username/cv-challenge-03.git ~/cv-challenge-03
-          else
-            echo "Repository already cloned. Pulling latest changes."
-            cd ~/cv-challenge-03
-            git pull
-          fi
+            if [ ! -d "~/cv-challenge-03" ]; then
+              git clone -b integration https://${{ secrets.GITHUB_PAT }}@github.com/kappu1512/cv-challenge-03.git ~/cv-challenge-03
+            else
+              echo "Repository already cloned. Pulling latest changes."
+              cd ~/cv-challenge-03
+              git pull
+            fi
+      
+    # # Step 2: Clone Repository on Target Server
+    # - name: Clone Repository
+    #   uses: appleboy/ssh-action@v0.1.5
+    #   with:
+    #     host: ${{ secrets.TARGET_SERVER_HOST }}
+    #     username: ${{ secrets.TARGET_SERVER_USER }}
+    #     key: ${{ secrets.TARGET_SERVER_SSH_KEY }}
+    #     port: 22
+    #     script: |
+    #       if [ ! -d "~/cv-challenge-03" ]; then
+    #         git clone https://github.com/your-username/cv-challenge-03.git ~/cv-challenge-03
+    #       else
+    #         echo "Repository already cloned. Pulling latest changes."
+    #         cd ~/cv-challenge-03
+    #         git pull
+    #       fi
 
     # Step 3: Install Docker Compose on the Target Server
     - name: Install Docker Compose
