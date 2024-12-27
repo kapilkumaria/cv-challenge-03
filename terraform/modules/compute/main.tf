@@ -60,20 +60,23 @@ resource "local_file" "ansible_inventory" {
 ${ip} ansible_user=ubuntu ansible_ssh_private_key_file=/home/ubuntu/devops1.pem
 %{ endfor }
 EOT
-  # filename = "${path.module}/../../../ansible/inventory/ansible.ini"
-  #filename = "../../ansible/inventory/ansible.ini"
   filename = "../ansible/inventory/ansible.ini"
-  # filename = "../ansible/inventory/ansible.ini"
-  # filename = "./ansible/inventory/ansible.ini"
   depends_on = [aws_instance.compute]
 }
 
-# resource "null_resource" "wait_for_instance" {
-#   provisioner "local-exec" {
-#     command = "sleep 60"
-#   }
-#   depends_on = [aws_instance.compute]
-# }
+# Wait for Instance to be Ready
+resource "null_resource" "wait_for_instance" {
+  provisioner "remote-exec" {
+    inline = ["echo 'Instance is ready!'"]
+    connection {
+      type        = "ssh"
+      host        = aws_instance.compute.0.public_ip
+      user        = "ubuntu"
+      private_key = file("/home/ubuntu/devops1.pem")
+    }
+  }
+  depends_on = [aws_instance.compute]
+}
 
 resource "null_resource" "wait_for_instance" {
   provisioner "remote-exec" {
@@ -88,7 +91,6 @@ resource "null_resource" "wait_for_instance" {
 
   depends_on = [aws_instance.compute]
 }
-
 
 # Route 53 Records
 resource "aws_route53_record" "www_record" {
@@ -109,10 +111,10 @@ resource "aws_route53_record" "root_record" {
   depends_on = [aws_instance.compute]
 }
 
+# Run Ansible Playbook to Deploy Monitoring Resorces on target Server"
 resource "null_resource" "run_ansible" {
   provisioner "local-exec" {
-    # command = "ansible-playbook -i ../ansible/inventory/ansible.ini ../ansible/site.yml -vvvv"
-    command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ../ansible/inventory/ansible.ini ../ansible/site.yml -vvvv"
+    command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ../ansible/inventory/ansible.ini ../ansible/site.yml -vvvv"    
   }
 
   depends_on = [null_resource.wait_for_instance]
