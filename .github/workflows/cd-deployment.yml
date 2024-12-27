@@ -10,21 +10,7 @@ jobs:
     runs-on: self-hosted
 
     steps:
-    # Step 1: Checkout the code
-    - name: Checkout code
-      uses: actions/checkout@v3
-
-    - name: Debug Secrets
-      run: |
-        echo "Testing Secrets"
-        if [ -z "${{ secrets.MY_GITHUB_PAT }}" ]; then
-          echo "GITHUB_PAT is not available!"
-          exit 1
-        else
-          echo "GITHUB_PAT is available and set."
-        fi
-    
-
+    # Step 1: Clone the Code
     - name: Clone Repository
       uses: appleboy/ssh-action@v0.1.5
       with:
@@ -34,75 +20,26 @@ jobs:
         port: 22
         script: |
           export GITHUB_PAT=${{ secrets.MY_GITHUB_PAT }}
-          
+
           # Set up Git credentials
           git config --global credential.helper store
-          echo "https://${MY_GITHUB_PAT}:@github.com" > ~/.git-credentials
-    
-          # Clone the repository
-          if [ ! -d "~/cv-challenge-03" ]; then
-            git clone -b integration https://github.com/kapilkumaria/cv-challenge-03.git ~/cv-challenge-03
-          else
-            echo "Repository already cloned. Pulling latest changes."
-            cd ~/cv-challenge-03
-            git pull
+          echo "https://${GITHUB_PAT}:@github.com" > ~/.git-credentials
+
+          # Define repository directory
+          REPO_DIR="$HOME/cv-challenge-03-test"
+
+          # Check if the directory exists and delete it if it does
+          if [ -d "$REPO_DIR" ]; then
+            echo "Directory exists. Deleting it."
+            rm -rf "$REPO_DIR"
           fi
-    
 
-    # - name: Clone Repository
-    #   uses: appleboy/ssh-action@v0.1.5
-    #   with:
-    #     host: ${{ secrets.TARGET_SERVER_HOST }}
-    #     username: ${{ secrets.TARGET_SERVER_USER }}
-    #     key: ${{ secrets.TARGET_SERVER_SSH_KEY }}
-    #     port: 22
-    #     script: |
-    #       export GITHUB_PAT=${{ secrets.GITHUB_PAT }}
-    #       if [ ! -d "~/cv-challenge-03" ]; then
-    #         echo "Cloning the repository..."
-    #         git clone -b integration https://$GITHUB_PAT@github.com/kappu1512/cv-challenge-03.git ~/cv-challenge-03
-    #       else
-    #         echo "Repository already cloned. Pulling latest changes."
-    #         cd ~/cv-challenge-03
-    #         git pull
-    #       fi
-        
-
-    # - name: Clone Repository
-    #   uses: appleboy/ssh-action@v0.1.5
-    #   with:
-    #     host: ${{ secrets.TARGET_SERVER_HOST }}
-    #     username: ${{ secrets.TARGET_SERVER_USER }}
-    #     key: ${{ secrets.TARGET_SERVER_SSH_KEY }}
-    #     port: 22
-    #     script: |
-    #         if [ ! -d "~/cv-challenge-03" ]; then
-    #           git clone -b integration https://${{ secrets.GITHUB_PAT }}@github.com/kappu1512/cv-challenge-03.git ~/cv-challenge-03
-    #         else
-    #           echo "Repository already cloned. Pulling latest changes."
-    #           cd ~/cv-challenge-03
-    #           git pull
-    #         fi
-      
-    # # Step 2: Clone Repository on Target Server
-    # - name: Clone Repository
-    #   uses: appleboy/ssh-action@v0.1.5
-    #   with:
-    #     host: ${{ secrets.TARGET_SERVER_HOST }}
-    #     username: ${{ secrets.TARGET_SERVER_USER }}
-    #     key: ${{ secrets.TARGET_SERVER_SSH_KEY }}
-    #     port: 22
-    #     script: |
-    #       if [ ! -d "~/cv-challenge-03" ]; then
-    #         git clone https://github.com/your-username/cv-challenge-03.git ~/cv-challenge-03
-    #       else
-    #         echo "Repository already cloned. Pulling latest change."
-    #         cd ~/cv-challenge-03
-    #         git pull
-    #       fi
-
-    # Step 3: Install Docker Compose on the Target Server
-    - name: Install Docker Compose
+          # Clone the repository
+          echo "Cloning the repository."
+          git clone -b integration https://github.com/kapilkumaria/cv-challenge-03-test.git "$REPO_DIR"     
+              
+    # Step 2: Set 600 Permissions for acme.json
+    - name: Set permissions for acme.json
       uses: appleboy/ssh-action@v0.1.5
       with:
         host: ${{ secrets.TARGET_SERVER_HOST }}
@@ -110,15 +47,18 @@ jobs:
         key: ${{ secrets.TARGET_SERVER_SSH_KEY }}
         port: 22
         script: |
-          if ! [ -x "$(command -v docker-compose)" ]; then
-            echo "Installing Docker Compose..."
-            sudo curl -L "https://github.com/docker/compose/releases/download/v2.20.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-            sudo chmod +x /usr/local/bin/docker-compose
-            sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
-          else
-            echo "Docker Compose is already installed."
-          fi
-          docker-compose --version
+          chmod 600 /home/ubuntu/cv-challenge-03-test/traefik/letsencrypt/acme.json
+        
+    # Step 3: Set Executable Permissions for prestart.sh
+    - name: Set permissions for prestart.sh
+      uses: appleboy/ssh-action@v0.1.5
+      with:
+        host: ${{ secrets.TARGET_SERVER_HOST }}
+        username: ${{ secrets.TARGET_SERVER_USER }}
+        key: ${{ secrets.TARGET_SERVER_SSH_KEY }}
+        port: 22
+        script: |
+          chmod +x /home/ubuntu/cv-challenge-03-test/source/backend/prestart.sh
 
     # Step 4: Pull Docker Images on the Target Server
     - name: Pull Docker Images
@@ -132,8 +72,24 @@ jobs:
           echo ${{ secrets.DOCKER_PASSWORD }} | docker login --username ${{ secrets.DOCKER_USERNAME }} --password-stdin
           docker pull kappu1512/frontend:latest
           docker pull kappu1512/backend:latest
-
-    # Step 5: Deploy Application Using Docker Compose
+          docker pull kappu1512/traefik:v2.10.1
+          docker pull kappu1512/adminer:latest            
+          
+    # Step 5: Install Ansible on Target Machine
+    - name: Install Ansible
+      uses: appleboy/ssh-action@v0.1.5
+      with:
+        host: ${{ secrets.TARGET_SERVER_HOST }}
+        username: ${{ secrets.TARGET_SERVER_USER }}
+        key: ${{ secrets.TARGET_SERVER_SSH_KEY }}
+        port: 22
+        script: |
+          sudo apt update
+          sudo apt install -y software-properties-common
+          sudo add-apt-repository --yes --update ppa:ansible/ansible
+          sudo apt install -y ansible       
+          
+    # Step 6: Deploy Application Using Docker Compose
     - name: Deploy with Docker Compose
       uses: appleboy/ssh-action@v0.1.5
       with:
@@ -142,17 +98,40 @@ jobs:
         key: ${{ secrets.TARGET_SERVER_SSH_KEY }}
         port: 22
         script: |
-          cd ~/cv-challenge-03/source/application
-          docker-compose down
-          docker-compose up -d
+          docker-compose -f /home/ubuntu/cv-challenge-03-test/source/application/docker-compose.application.yaml down
+          docker-compose -f /home/ubuntu/cv-challenge-03-test/source/application/docker-compose.application.yaml up -d
 
-    # Step 6: Health Check
-    - name: Run Health Check
-      uses: appleboy/ssh-action@v0.1.5
-      with:
-        host: ${{ secrets.TARGET_SERVER_HOST }}
-        username: ${{ secrets.TARGET_SERVER_USER }}
-        key: ${{ secrets.TARGET_SERVER_SSH_KEY }}
-        port: 22
-        script: |
-          curl -f http://localhost:80 || exit 1
+    # # Step 7: Run Health Check
+    # - name: Run Health Check
+    #   uses: appleboy/ssh-action@v0.1.5
+    #   with:
+    #     host: ${{ secrets.TARGET_SERVER_HOST }}
+    #     username: ${{ secrets.TARGET_SERVER_USER }}
+    #     key: ${{ secrets.TARGET_SERVER_SSH_KEY }}
+    #     port: 22
+    #     script: |
+    #       # Wait for the application to start by checking readiness
+    #       echo "Waiting for the application to start..."
+          
+    #       # Check frontend readiness
+    #       until curl -sf http://localhost:3000 > /dev/null; do
+    #         echo "Waiting for the frontend to be ready..."
+    #         sleep 5
+    #       done
+    #       echo "Frontend is ready!"
+
+    #       # Check backend readiness
+    #       until curl -sf https://boss.kapilkumaria.com/health > /dev/null; do
+    #         echo "Waiting for the backend to be ready..."
+    #         sleep 5
+    #       done
+    #       echo "Backend is ready!"
+
+    #       # Final health checks
+    #       echo "Checking the frontend health..."
+    #       curl -f http://localhost:3000 || { echo "Frontend health check failed"; exit 1; }
+
+    #       echo "Checking the backend health..."
+    #       curl -f https://boss.kapilkumaria.com/health || { echo "Backend health check failed"; exit 1; }
+
+    #       echo "All services are healthy!"
