@@ -25,11 +25,6 @@
     name: app_network
     state: present
 
-# - name: Reload Docker group membership
-#   shell: "newgrp docker || true"
-#   args:
-#     executable: /bin/bash
-
 - name: Reboot the system to apply Docker group changes
   reboot:
     msg: "Rebooting to apply Docker group changes"
