@@ -21,7 +21,7 @@ This iteration emphasizes automation and cost optimization through a GitOps-cent
 - GitOps principles for streamlined workflows.
 - Real-time cost estimation to enhance financial efficiency.
 - Dynamic infrastructure and application management pipelines for better scalability and maintainability.
-# Objectives
+## Objectives
 1. **Implement GitOps Principles**: Utilize pull requests to enforce code reviews, discussions, and automated checks, ensuring high-quality changes before deployment.
 2. **Enhance Automation Across Pipelines**: Develop fully automated CI/CD pipelines to reduce manual intervention and improve workflow efficiency for infrastructure and applications.
 3. **Optimize Infrastructure Costs**: Integrate cost analysis and optimization tools, such as Infracost, to monitor and minimize infrastructure expenses proactively.
