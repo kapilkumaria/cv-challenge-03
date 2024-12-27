@@ -8,20 +8,13 @@ Provisions and manages infrastructure using Terraform. Provides real-time cost a
 
 ## Application Pipeline
 
-<u>CI pipelines</u> 
+1. **CI pipelines**: Build Docker images for the application and update the deployment file (docker-compose.yml) with the latest image tag. Tags are structured using the workflow run number and short commit SHA for precise traceability (e.g., maestrops/backend:4-0a3087a).
 
-Build Docker images for the application and update the deployment file (docker-compose.yml) with the latest image tag. Tags are structured using the workflow run number and short commit SHA for precise traceability (e.g., maestrops/backend:4-0a3087a).
+2. **CD pipelines**: Deploy applications only after pull requests are merged, ensuring all changes are reviewed and approved. Post-deployment, applications are accessible through static configurations managed by Traefik.
 
-<u>CD pipelines</u>
+## Security Enhancements
 
-Deploy applications only after pull requests are merged, ensuring all changes are reviewed and approved. Post-deployment, applications are accessible through static configurations managed by Traefik.
-
-<u>Security Enhancements</u>
-
-To maintain robust security:
-
-GitHub Actions repository secrets are used for managing sensitive variables.
-Environment files (.env) for applications are generated dynamically at runtime and securely destroyed after deployment.
+To maintain robust security: GitHub Actions repository secrets are used for managing sensitive variables. Environment files (.env) for applications are generated dynamically at runtime and securely destroyed after deployment.
 
 ## Key Improvements
 
@@ -30,7 +23,6 @@ This iteration emphasizes automation and cost optimization through a GitOps-cent
 - GitOps principles for streamlined workflows.
 - Real-time cost estimation to enhance financial efficiency.
 - Dynamic infrastructure and application management pipelines for better scalability and maintainability.
-
 
 # Objectives
 
