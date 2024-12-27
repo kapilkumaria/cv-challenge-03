@@ -187,7 +187,9 @@ Run the following commands to switch Terraform state management from local to re
 
 ```
 cd terraform
-terraform init      # Reinitialize with the remote backend
+terraform init       # Reinitialize with the remote backend
+terraform plan       # Shows the plan for the resources to be created
+terraform apply      # Creates S3 bucket and DynamoDB Table and IAM policy for Terraform to access S3 and DynamoDB backend
 ```
 
 ### Step 8: Copy <aws.pem> File to Your Home Directory
