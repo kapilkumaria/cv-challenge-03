@@ -132,15 +132,10 @@ Follow the steps below to set up and deploy the services defined in this reposit
 Clone this repository to your server to access the application and configuration files.
 ```
 git clone https://github.com/kapilkumaria/cv-challenge-03.git
-```
-### Step 4: Navigate to the Terraform Directory
-
-Move into the application folder where the main docker-compose.yml file is located.
-```
-cd cv-challenge-02/terraform
+git branch -a
 ```
 
-### Step 5: Create an AWS Profile
+### Step 4: Create an AWS Profile
 
 Set up an AWS CLI profile to manage credentials and region configurations:
 ```
@@ -157,6 +152,27 @@ provider "aws" {
 }
 
 ```
+
+### Step 5: Switch Branch from `main` to `infra_features`
+
+Move into the application folder where the main docker-compose.yml file is located.
+```
+cd cv-challenge-02/terraform
+```
+
+
+
+
+
+
+
+### Step 5: Navigate to the Terraform Directory
+
+Move into the application folder where the main docker-compose.yml file is located.
+```
+cd cv-challenge-02/terraform
+```
+
 ### Step 6: Set Up the Remote Backend
 
 Navigate to the terraform/backend directory.
