@@ -54,7 +54,7 @@ jobs:
     #     sed -i 's|image: kappu1512/frontend:.*|image: kappu1512/frontend:${{ github.sha }}|' docker-compose.yml
 
     # # Step 7: Commit and Push Changes to Integration Branch
-    # - name: Commit and Push Changes
+    # - name: Commit and Push Change
     #   run: |
     #     git config --local user.name "GitHub Actions"
     #     git config --local user.email "actions@github.com"
