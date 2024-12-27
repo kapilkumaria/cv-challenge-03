@@ -74,8 +74,33 @@ jobs:
           docker pull kappu1512/backend:latest
           docker pull kappu1512/traefik:v2.10.1
           docker pull kappu1512/adminer:latest            
+
+    # Step 5: Install Docker Compose on Target Machine
+    - name: Install Docker Compose
+      uses: appleboy/ssh-action@v0.1.5
+      with:
+        host: ${{ secrets.TARGET_SERVER_HOST }}
+        username: ${{ secrets.TARGET_SERVER_USER }}
+        key: ${{ secrets.TARGET_SERVER_SSH_KEY }}
+        port: 22
+        script: |
+          # Update the package list
+          sudo apt update
           
-    # Step 5: Install Ansible on Target Machine
+          # Install dependencies
+          sudo apt install -y curl jq
+
+          # Download the latest version of Docker Compose
+          DOCKER_COMPOSE_VERSION=$(curl -s https://api.github.com/repos/docker/compose/releases/latest | jq -r .tag_name)
+          sudo curl -L "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+
+          # Make Docker Compose executable
+          sudo chmod +x /usr/local/bin/docker-compose
+
+          # Verify the installation
+          docker-compose --version
+          
+    # Step 6: Install Ansible on Target Machine
     - name: Install Ansible
       uses: appleboy/ssh-action@v0.1.5
       with:
@@ -89,7 +114,7 @@ jobs:
           sudo add-apt-repository --yes --update ppa:ansible/ansible
           sudo apt install -y ansible       
           
-    # Step 6: Deploy Application Using Docker Compose
+    # Step 7: Deploy Application Using Docker Compose
     - name: Deploy with Docker Compose
       uses: appleboy/ssh-action@v0.1.5
       with:
