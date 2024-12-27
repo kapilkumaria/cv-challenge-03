@@ -105,3 +105,92 @@ This iteration emphasizes automation and cost optimization through a GitOps-cent
         - ci-application.yml
         - cd-application.yml
 
+    # Include Snaphot of Application here
+    # Include Snaphot of Application here
+    # Include Snaphot of Application here
+    # Include Snaphot of Application here
+    # Include Snaphot of Application here
+
+# How to Use This Repository
+
+Follow the steps below to set up and deploy the services defined in this repository:
+
+### Step 1: AWS - EC2 Instance Ubuntu, t2.medium with 50GiB Storage Volume
+
+### Step 2: Install these Packages
+- Update System Packes
+- Git
+- Docker
+- Docker Compose
+- Terraform
+- Ansible
+- AWS CLI
+- Tree (Optional)
+
+### Step 3: Clone the Repository
+
+Clone this repository to your server to access the application and configuration files.
+```
+git clone https://github.com/kapilkumaria/cv-challenge-02.git
+```
+### Step 4: Navigate to the Terraform Directory
+
+Move into the application folder where the main docker-compose.yml file is located.
+```
+cd cv-challenge-02/terraform
+```
+
+### Step 5: Create an AWS Profile
+
+Set up an AWS CLI profile to manage credentials and region configurations:
+```
+aws configure --profile=<profile-name>
+
+# Replace <profile-name> with a unique name for your profile (e.g., terraform-profile).
+
+```
+Update the provider block in terraform/main.tf to use the newly created AWS profile:
+
+```
+provider "aws" {
+    profile = "<profile-name>"   # Replace with the profile name you configured
+}
+
+```
+### Step 6: Set Up the Remote Backend
+
+Navigate to the terraform/backend directory.
+Run the following commands to create an S3 bucket for storing the Terraform state file remotely and a DynamoDB table for state locking:
+```
+cd terraform/backend
+terraform init      # Initialize the backend configuration
+terraform plan      # Preview the changes to be applied
+terraform apply     # Apply the changes to create S3 bucket and DynamoDB table
+
+# Note: (Optional) Replace 'S3 bucket name', 'DynamoDB table name' and 'IAM policy for terraform backend access in terraform/backend/main.tf'
+```
+### Step 7: Configure Terraform Backend to Use Remote S3 for State Management
+
+Navigate to the root terraform/ directory.
+
+Run the following commands to switch Terraform state management from local to remote using the S3 bucket and DynamoDB table created earlier:
+
+```
+cd terraform
+terraform init      # Reinitialize with the remote backend
+```
+
+### Step 8: Copy <aws.pem> File to Your Home Directory
+
+Use the scp command to securely copy your .pem file (AWS key pair) to the home directory of the server where Terraform will be executed:
+```
+scp -i <aws.pem> <aws.pem> ubuntu@<server_ip>:/home/ubuntu
+
+# Replace <aws.pem> with the name of your key pair file.
+# Replace <server_ip> with the public IP address of your server.
+```
+```
+# Ensure that Git does not track this .pem file to avoid security risks:
+
+git update-index --assume-unchanged <path-to-aws.pem>
+```
