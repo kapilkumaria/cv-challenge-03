@@ -160,17 +160,11 @@ Move into the application folder where the main docker-compose.yml file is locat
 cd cv-challenge-02/terraform
 ```
 
-
-
-
-
-
-
-### Step 5: Navigate to the Terraform Directory
+### Step 6: Navigate to the Terraform Directory
 
 Move into the application folder where the main docker-compose.yml file is located.
 ```
-cd cv-challenge-02/terraform
+cd cv-challenge-03/terraform
 ```
 
 ### Step 6: Set Up the Remote Backend
