@@ -118,7 +118,7 @@ Follow the steps below to set up and deploy the services defined in this reposit
 ### Step 1: AWS - EC2 Instance Ubuntu, t2.medium with 50GiB Storage Volume
 
 ### Step 2: Install these Packages
-- Update System Packes
+- Update System Packages
 - Git
 - Docker
 - Docker Compose
@@ -131,7 +131,7 @@ Follow the steps below to set up and deploy the services defined in this reposit
 
 Clone this repository to your server to access the application and configuration files.
 ```
-git clone https://github.com/kapilkumaria/cv-challenge-02.git
+git clone https://github.com/kapilkumaria/cv-challenge-03.git
 ```
 ### Step 4: Navigate to the Terraform Directory
 
@@ -194,3 +194,42 @@ scp -i <aws.pem> <aws.pem> ubuntu@<server_ip>:/home/ubuntu
 
 git update-index --assume-unchanged <path-to-aws.pem>
 ```
+### Step 9: Configure GitHub Action Self-Hosted Runner for Pipeline Execution
+- Spin up a new ec2 instance, whcih will act as a GitHub Runner
+
+1. Navigate to Repository/Settings/Code and Automation/Actions/Runners
+2. Click - New self-hosted runner
+   2.1 Choose Runner image e.g. Linux
+   2.2 Run all the given commands on this new ec2 instance
+   2.3 We will modify all Pipelines later to be run-on: self-hosted
+
+### Step 10: Update Security Group Rules in variables.tf
+
+Open the file located at terraform/modules/compute/variables.tf.
+
+Update the security group rules as follows:
+    Port 22 (SSH): Set the CIDR block to your IP address for secure SSH access.
+    Port 22 (Server/Host): Set the GitHub Runner Server IP address of the server (ec2) where GitHub Action Pipeline is running.
+
+  Example configuration:
+```
+variable "security_group_rules" {
+    default = [
+        {
+            from_port   = 22
+            to_port     = 22
+            protocol    = "tcp"
+            cidr_blocks = ["<your-ip>/32"]   # Replace <your-ip> with your local IP address
+        },
+        {
+            from_port   = 22
+            to_port     = 22
+            protocol    = "tcp"
+            cidr_blocks = ["<server-ip>/32"]  # Replace <server-ip> with the GitHub Runner Server IP
+        }
+    ]
+}
+
+# Save the changes and proceed with your Terraform steps.
+```
+
