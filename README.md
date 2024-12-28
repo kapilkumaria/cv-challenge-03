@@ -244,4 +244,72 @@ variable "security_group_rules" {
 
 # Save the changes and proceed with your Terraform steps.
 ```
+### Step 11: Navigate to Ansible to Create `inventory` folder and `ansible.ini` Inventory File
+
+```
+cd ansible
+mkdir inventory
+cd inventory
+touch ansible.ini
+```
+```
+vi ansible.ini
+```
+```
+[webserver]
+`xx.xx.xx.xx` ansible_user=ubuntu ansible_ssh_private_key_file=~/devops1.pem 
+
+Note: `xx.xx.xx.xx` will be updated dynamically by terraform
+```
+
+### Step 12: Navigate to `source` folder and Update Domain name from docker-compose.monitoring.yaml
+```
+cd source/application
+```
+```
+vi docker-compose.monitoring.yaml
+```
+- Replace all occurances of `boss.kapilkumaria.com` with your Domain `<your-domain>`
+
+
+# Include Snaphot of Domain_Update here
+
+### Step 13: Add GitHub Secrets
+ 
+1. Navigate to Repository/Settings/Code and Automation/Secrets and Variables/Actions
+2. Create following New repository secrets
+
+    _AWS_ACCESS_KEY_ID_
+
+    This is the public part of an AWS credential pair. It's used to authenticate with AWS services for tasks such as provisioning infrastructure or deploying applications.
+
+    _AWS_SECRET_ACCESS_KEY_
+
+    This is the private part of the AWS credential pair. It is combined with the access key ID to securely authenticate and authorize API requests to AWS.
+
+    _DOCKER_PASSWORD_
+
+    This is the password for your Docker Hub or a private Docker registry account. It's used in CI/CD pipelines to log in to the registry and push or pull Docker images.
+
+    _DOCKER_USERNAME_
+
+    This is the username associated with your Docker Hub or private Docker registry account. It works alongside the Docker password for authentication.
+
+    _INFRACOST_API_KEY_
+
+    This API key is used to authenticate with Infracost, a tool that provides cost estimates and analysis for infrastructure managed by Terraform. It allows the workflow to fetch detailed cost insights.
+
+    _MY_GITHUB_PAT (Personal Access Token)_
+
+    This is a GitHub Personal Access Token (PAT) that can be used for secure interactions with GitHub, such as triggering workflows, cloning private repositories, or updating deployment artifacts.
+
+    _SSH_PRIVATE_KEY_
+
+    This private SSH key is used for secure SSH authentication. It can be utilized to access remote servers for tasks like configuring infrastructure, deploying applications, or fetching sensitive data.
+
+
+# Include Snaphot of repo_secrets here
+
+### Step 14: 
+
 
