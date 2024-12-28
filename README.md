@@ -157,7 +157,9 @@ provider "aws" {
 
 Move into the application folder where the main docker-compose.yml file is located.
 ```
-cd cv-challenge-02/terraform
+cd cv-challenge-03
+git checkout infra_features
+ls
 ```
 
 ### Step 6: Navigate to the Terraform Directory
@@ -310,6 +312,31 @@ vi docker-compose.monitoring.yaml
 
 # Include Snaphot of repo_secrets here
 
-### Step 14: 
+### Step 14: Git Push/Commit to `infra_features` Branch
+
+```
+git status
+git add .
+git commit -m "<message>"
+git push origin infra_features
+```
+Push to infra_features:
+
+  Will trigger `terraform-validate` and Run terraform validate to check the correctness of terraform configurations.
+
+### Step 15: PR to `infra_main` from `infra_features`
+
+# Include Snaphot of PR here
+
+- **PR to `infra_main`:**  
+  - Trigger `terraform plan`, output the plan as a comment in the PR, including cost estimation (e.g., using InfraCost).  
+
+
+### Step 16: Merge to `infra_main`  
+
+  - Run `terraform apply` with auto-approval to provision resources.  
+  - Trigger Ansible to deploy the monitoring stack on the provisioned infrastructure. Monitoring stack includes grafana, prometheus, promtail, loki, cadvisor
+
+### Step 17: 
 
 
