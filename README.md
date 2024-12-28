@@ -32,7 +32,6 @@ This iteration emphasizes automation and cost optimization through a GitOps-cent
 8. **Facilitate Cost-Effective Infrastructure Management**: Leverage Terraform and Ansible to automate provisioning and configuration while maintaining a focus on cost-effectiveness.
 
 
-# Include Architecture Diagram here
 ![diagram](images/diagram.png)
 
 
@@ -315,7 +314,6 @@ vi docker-compose.monitoring.yaml
     This private SSH key is used for secure SSH authentication. It can be utilized to access remote servers for tasks like configuring infrastructure, deploying applications, or fetching sensitive data.
 
 
-# Include Snaphot of repo_secrets here
 ![secrets](images/repo_secrets.png)
 
 
