@@ -31,11 +31,7 @@ This iteration emphasizes automation and cost optimization through a GitOps-cent
 7. **Promote Scalability and Maintainability**: Create independent pipelines for infrastructure and application management, enabling easy scalability and future enhancements.
 8. **Facilitate Cost-Effective Infrastructure Management**: Leverage Terraform and Ansible to automate provisioning and configuration while maintaining a focus on cost-effectiveness.
 
-
-![diagram](images/diagram.png)
-
-
-
+![architecture](images/architecture.png)
 
 ### **Components** 
 --- 
