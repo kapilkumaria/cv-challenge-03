@@ -127,7 +127,7 @@ jobs:
           docker-compose -f /home/ubuntu/cv-challenge-03-test/source/application/docker-compose.application.yaml up -d
 
     # # Step 7: Run Health Check
-    # - name: Run Health Checks
+    # - name: Run Health Check
     #   uses: appleboy/ssh-action@v0.1.5
     #   with:
     #     host: ${{ secrets.TARGET_SERVER_HOST }}
