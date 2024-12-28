@@ -155,7 +155,6 @@ provider "aws" {
 
 ### Step 5: Switch Branch from `main` to `infra_features`
 
-Move into the application folder where the main docker-compose.yml file is located.
 ```
 cd cv-challenge-03
 git checkout infra_features
@@ -334,9 +333,84 @@ Push to infra_features:
 
 ### Step 16: Merge to `infra_main`  
 
+- **Merge to `infra_main`:**  
   - Run `terraform apply` with auto-approval to provision resources.  
-  - Trigger Ansible to deploy the monitoring stack on the provisioned infrastructure. Monitoring stack includes grafana, prometheus, promtail, loki, cadvisor
+  - Trigger Ansible to deploy the monitoring stack on the provisioned infrastructure.  
+Monitoring stack includes grafana, prometheus, promtail, loki, cadvisor services
 
-### Step 17: 
+### Step 17: Switch Branch from `infra_features` to `integration`
 
+```
+cd cv-challenge-03
+git checkout integration
+ls
+```
 
+### Step 18: Generate Letsencrypt Certificate for your Domain
+
+- Store the acme.json (Certificate) in letsencrypt folder e.g `cv-challenge-03-test/traefik/letsencrypt/acme.json` 
+
+### Step 19: Git Push/Commit to `integration` Branch
+```
+git status
+git add .
+git commit -m "<message>"
+git push origin integration
+```
+**Branches: `integration` → `deployment`**  
+- **Push to `integration`:**  
+  - Build and tag Docker images for the application.  
+  - Push images to a public Docker Hub repository.  
+  - Update `docker-compose.yml` with the new image tags and commit the changes.  
+
+### Step 20: Merge from `integration` to `deployment`
+
+- **Merge from `integration` to `deployment`:**  
+  - Deploy the application stack to the provisioned infrastructure.  
+
+### Step 21: Test Your Application and Verify the Deployment
+
+Verify the following components to ensure the deployment was successful:
+1. **Application Accessibility**: 
+  
+     1.1 Check if the application is accessible through the reverse proxy.
+     
+     1.2 Monitoring Dashboards: Confirm that the monitoring dashboards in Grafana are displaying metrics, including: 
+     
+      1.2.1 cAdvisor: Container-level metrics.
+     
+      1.2.2 Loki: Logs from the application and infrastructure.
+
+## Access the application and services using the following URLs:
+   
+   **Application Root**: `https://<your-domain>/`
+   
+   **API Documentation (Swagger)**: `https://<your-domain>/docs`
+   
+   **API Documentation (ReDoc)**: `https://<your-domain>/redocs`
+
+   **Database Admin Interface (Adminer)**: `https://<your-domain>/adminer`
+
+   **Prometheus Metrics**: `https://<your-domain>/prometheus`
+
+   **Grafana Dashboards**: `https://<your-domain>/grafana`
+
+Examples:
+
+   https://boss.kapilkumaria.com
+
+   https://boss.kapilkumaria.com/docs
+
+   https://boss.kapilkumaria.com/prometheus
+
+## Additional Features:
+  1. **Automatic Redirect to HTTPS**:
+
+        This setup ensures that all traffic to `http://www.<your-domain>` is redirected to `https://<your-domain>.com`
+        
+  2. **SSL Certificate Issuance**:
+
+        Traefik will automatically issue and manage SSL certificates for your domain, ensuring secure communication.
+
+  3. Replace `<your-domain>` with the actual domain name configured in your deployment.
+  
