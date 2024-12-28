@@ -33,6 +33,8 @@ This iteration emphasizes automation and cost optimization through a GitOps-cent
 
 
 # Include Architecture Diagram here
+![diagram](images/diagram.png)
+
 
 
 
@@ -105,7 +107,14 @@ This iteration emphasizes automation and cost optimization through a GitOps-cent
         - ci-application.yml
         - cd-application.yml
 
-    # Include Snaphot of Application here
+# Include Snaphot of Application here
+![diagram](images/diagram.png)
+![diagram](images/diagram.png)
+
+![diagram](images/diagram.png)
+![diagram](images/diagram.png)
+![diagram](images/diagram.png)
+
     # Include Snaphot of Application here
     # Include Snaphot of Application here
     # Include Snaphot of Application here
@@ -310,6 +319,8 @@ vi docker-compose.monitoring.yaml
 
 
 # Include Snaphot of repo_secrets here
+![diagram](images/diagram.png)
+
 
 ### Step 14: Git Push/Commit to `infra_features` Branch
 
@@ -326,6 +337,8 @@ Push to infra_features:
 ### Step 15: PR to `infra_main` from `infra_features`
 
 # Include Snaphot of PR here
+![diagram](images/diagram.png)
+
 
 - **PR to `infra_main`:**  
   - Trigger `terraform plan`, output the plan as a comment in the PR, including cost estimation (e.g., using InfraCost).  
@@ -403,6 +416,11 @@ Examples:
 
    https://boss.kapilkumaria.com/prometheus
 
+## Import Pre-Built Dashboard
+
+  Import the Container Metrics dashboard using ID: 19792 in Grafana Dashboard
+
+
 ## Additional Features:
   1. **Automatic Redirect to HTTPS**:
 
@@ -413,4 +431,4 @@ Examples:
         Traefik will automatically issue and manage SSL certificates for your domain, ensuring secure communication.
 
   3. Replace `<your-domain>` with the actual domain name configured in your deployment.
-  
+
