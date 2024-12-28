@@ -1,162 +1,65 @@
-- name: Copy Prometheus configuration to target machine
-  ansible.builtin.copy:
-    src: "{{ role_path }}/files/prometheus.yml"
-    dest: "/home/ubuntu/prometheus.yml"
-    owner: ubuntu
-    group: ubuntu
-    mode: '0644'
+    # Step 1: Download Docker Compose
+    - name: Download Docker Compose
+      ansible.builtin.get_url:
+        url: "https://github.com/docker/compose/releases/latest/download/docker-compose-Linux-x86_64"
+        dest: /usr/local/bin/docker-compose
+        mode: '0755'
 
+    # Step 2: Copy Docker Compose Monitoring File
+    - name: Copy Docker Compose file to target machine
+      ansible.builtin.copy:
+        src: ../source/application/docker-compose.monitoring.yaml
+        dest: /home/ubuntu/docker-compose.monitoring.yaml
+        owner: ubuntu
+        group: ubuntu
+        mode: '0644'
 
-- name: Deploy Prometheus container
-  ansible.builtin.docker_container:
-    name: prometheus
-    image: kappu1512/prometheus:latest
-    state: started
-    ports:
-      - "9090:9090"
-    volumes:
-      - "/home/ubuntu/prometheus.yml:/etc/prometheus/prometheus.yml"
-    command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-      - '--web.external-url=/prometheus'
-    labels:
-      traefik.enable: "true"
-      traefik.http.services.prometheus.loadbalancer.server.port: "9090"
-      traefik.http.routers.prometheus-http.rule: "((Host(`boss.kapilkumaria.com`) || Host(`www.boss.kapilkumaria.com`)) && PathPrefix(`/prometheus`))"
-      traefik.http.routers.prometheus-http.entrypoints: "web"
-      traefik.http.routers.prometheus-https.middlewares: "www-to-non-www"
-      traefik.http.routers.prometheus-https.rule: "((Host(`boss.kapilkumaria.com`) || Host(`www.boss.kapilkumaria.com`)) && PathPrefix(`/prometheus`))"
-      traefik.http.routers.prometheus-https.entrypoints: "websecure"
-      traefik.http.routers.prometheus-https.tls.certresolver: "letsencryptresolver"
-      traefik.http.routers.prometheus-https.service: "prometheus"
-    networks:
-      - name: app_network
+    # Step 3: Copy Prometheus Configuration File
+    - name: Copy prometheus.yaml to the target machine
+      copy:
+        src: ../source/application/prometheus.yaml  # Update with your local path
+        dest: /home/ubuntu/prometheus.yaml
 
+    # Step 4: Copy Grafana Configuration File
+    - name: Copy grafana.yaml to the target machine
+      copy:
+        src: ../source/application/grafana.yaml  # Update with your local path
+        dest: /home/ubuntu/grafana.yaml
 
-- name: Copy Grafana configuration to target machine
-  ansible.builtin.copy:
-    src: "{{ role_path }}/files/grafana.yml"
-    dest: "/home/ubuntu/grafana.yml"
-    owner: ubuntu
-    group: ubuntu
-    mode: '0644'
+    # Step 5: Copy Loki Configuration File
+    - name: Copy loki-config.yml to the target machine
+      copy:
+        src: ../source/application/loki-config.yaml  # Update with your local path
+        dest: /home/ubuntu/loki-config.yaml
 
-- name: Deploy Grafana container
-  ansible.builtin.docker_container:
-    name: grafana
-    image: kappu1512/grafana:latest
-    state: started
-    ports:
-      - "3000:3000"  # Map container port 3000 to host port 3000
-    volumes:
-      - "/home/ubuntu/grafana.yml:/etc/grafana/provisioning/datasources/grafana.yaml"
-    env:
-      GF_SERVER_ROOT_URL: "http://localhost:3000/grafana"
-      GF_SERVER_SERVE_FROM_SUB_PATH: "true"
-    labels:
-      traefik.enable: "true"
-      # HTTP Service
-      traefik.http.services.grafana.loadbalancer.server.port: "3000"
-      # HTTP Router
-      traefik.http.routers.grafana-http.rule: "((Host(`boss.kapilkumaria.com`) || Host(`www.boss.kapilkumaria.com`)) && PathPrefix(`/grafana`))"
-      traefik.http.routers.grafana-http.entrypoints: "web"
-      # HTTP to HTTPS redirect
-      traefik.http.routers.grafana-https.middlewares: "www-to-non-www"
-      # HTTPS Router
-      traefik.http.routers.grafana-https.rule: "((Host(`boss.kapilkumaria.com`) || Host(`www.boss.kapilkumaria.com`)) && PathPrefix(`/grafana`))"
-      traefik.http.routers.grafana-https.entrypoints: "websecure"
-      traefik.http.routers.grafana-https.tls.certresolver: "letsencryptresolver"
-      traefik.http.routers.grafana-https.service: "grafana"
-    networks:
-      - name: app_network
+    # Step 6: Copy Promtail Configuration File
+    - name: Copy promtail-config.yaml to the target machine
+      copy:
+        src: ../source/application/promtail-config.yaml  # Update with your local path
+        dest: /home/ubuntu/promtail-config.yaml
 
+    # Step 7: Change Ownership of Copied Configuration Files
+    - name: Change ownership of copied files
+      file:
+        path: "{{ item }}"
+        owner: ubuntu
+        group: ubuntu
+        mode: '0644'
+      loop:
+        - /home/ubuntu/docker-compose.monitoring.yaml
+        - /home/ubuntu/prometheus.yaml
+        - /home/ubuntu/grafana.yaml
+        - /home/ubuntu/loki-config.yaml
+        - /home/ubuntu/promtail-config.yaml       
 
-- name: Deploy cAdvisor container
-  ansible.builtin.docker_container:
-    name: cadvisor
-    image: kappu1512/cadvisor:v0.47.0
-    state: started
-    ports:
-      - "8082:8080"
-    volumes:
-      - "/:/rootfs:ro"
-      - "/var/run:/var/run:rw"
-      - "/sys:/sys:ro"
-      - "/var/lib/docker/:/var/lib/docker:ro"
-    networks:
-      - name: app_network
-    labels:
-      traefik.enable: "true"
+    # Step 8: Bring Monitoring Services Up By Running Docker Compose Up
+    - name: Run docker-compose up
+      shell: docker-compose -f /home/ubuntu/docker-compose.monitoring.yaml up -d
+      become: yes
+      register: docker_compose_output
+      #ignore_errors: yes
 
-      # HTTP Router for cAdvisor
-      traefik.http.routers.cadvisor-http.rule: "Host(`boss.kapilkumaria.com`) && PathPrefix(`/cadvisor`)"
-      traefik.http.routers.cadvisor-http.entrypoints: "web"
-      traefik.http.routers.cadvisor-http.middlewares: "add-cadvisor-redirect,cadvisor-strip-prefix"
-      # HTTPS Router for cAdvisor
-      traefik.http.routers.cadvisor-https.rule: "Host(`boss.kapilkumaria.com`) && PathPrefix(`/cadvisor`)"
-      traefik.http.routers.cadvisor-https.entrypoints: "websecure"
-      traefik.http.routers.cadvisor-https.middlewares: "add-cadvisor-redirect,cadvisor-strip-prefix"
-      traefik.http.routers.cadvisor-https.tls.certresolver: "letsencryptresolver"
-      # Middleware: Redirect /cadvisor to /cadvisor/containers/
-      traefik.http.middlewares.add-cadvisor-redirect.redirectregex.regex: "^/cadvisor$"
-      traefik.http.middlewares.add-cadvisor-redirect.redirectregex.replacement: "/cadvisor/containers/"
-      traefik.http.middlewares.add-cadvisor-redirect.redirectregex.permanent: "true"
-      # Middleware: Strip /cadvisor prefix
-      traefik.http.middlewares.cadvisor-strip-prefix.stripprefix.prefixes: "/cadvisor"
-      # cAdvisor Service
-      traefik.http.services.cadvisor.loadbalancer.server.port: "8080"
-       
-
-- name: Copy Loki configuration to target machine
-  ansible.builtin.copy:
-    src: "{{ role_path }}/files/loki-config.yml"
-    dest: "/home/ubuntu/loki-config.yml"
-    owner: ubuntu
-    group: ubuntu
-    mode: '0644'
-
-- name: Deploy Loki container
-  community.docker.docker_container:
-    name: loki
-    image: kappu1512/loki:latest
-    state: started
-    ports:
-      - "3100:3100"
-    volumes:
-      - "/home/ubuntu/loki-config.yml:/etc/loki/loki-config.yaml"
-    networks:
-      - name: app_network
-    labels:
-      traefik.enable: "true"
-      traefik.http.routers.loki-http.rule: "(Host(`boss.kapilkumaria.com`) && PathPrefix(`/loki`))"
-      traefik.http.routers.loki-http.entrypoints: "web"
-      traefik.http.services.loki.loadbalancer.server.port: "3100"
-
-# - name: Wait for Loki to be ready
-#   ansible.builtin.wait_for:
-#     host: "{{ ansible_host }}"
-#     port: 3100
-#     timeout: 30
-
-- name: Copy Promtail configuration to target machine
-  ansible.builtin.copy:
-    src: "{{ role_path }}/files/promtail-config.yml"
-    dest: "/home/ubuntu/promtail-config.yml"
-    owner: ubuntu
-    group: ubuntu
-    mode: '0644'
-
-- name: Deploy Promtail container
-  community.docker.docker_container:
-    name: promtail
-    image: kappu1512/promtail:latest
-    state: started
-    volumes:
-      - "/home/ubuntu/promtail-config.yml:/etc/promtail/promtail-config.yml"
-    networks:
-      - name: app_network
-    labels:
-      traefik.enable: "true"
-      traefik.http.routers.promtail-http.rule: "(Host(`boss.kapilkumaria.com`) && PathPrefix(`/promtail`))"
-      traefik.http.routers.promtail-http.entrypoints: "web"
-      traefik.http.services.promtail.loadbalancer.server.port: "9080"
+    # Step 9: Debug docker-compose output 
+    - name: Debug docker-compose output
+      debug:
+        var: docker_compose_output

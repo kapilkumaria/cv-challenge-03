@@ -1,6 +1,6 @@
 provider "aws" {
   region = "us-east-1"
-  profile = "myAWS"
+  profile = "myAWS"  # Replace with your AWS Profile
 }
 
 # Create S3 bucket for Terraform state
