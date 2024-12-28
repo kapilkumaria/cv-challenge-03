@@ -107,18 +107,16 @@ This iteration emphasizes automation and cost optimization through a GitOps-cent
         - ci-application.yml
         - cd-application.yml
 
-# Include Snaphot of Application here
-![diagram](images/diagram.png)
-![diagram](images/diagram.png)
 
-![diagram](images/diagram.png)
-![diagram](images/diagram.png)
-![diagram](images/diagram.png)
+![cost](images/cost_estimation.png)
+![docs](images/docs.png)
+![redoc](images/redoc.png)
+![prometheus](images/prometheus.png)
+![grafana1](images/grafana1.png)
+![grafana2](images/grafana2.png)
+![grafana3](images/grafana3.png)
+![grafana4](images/grafana4.png)
 
-    # Include Snaphot of Application here
-    # Include Snaphot of Application here
-    # Include Snaphot of Application here
-    # Include Snaphot of Application here
 
 # How to Use This Repository
 
@@ -281,8 +279,7 @@ vi docker-compose.monitoring.yaml
 ```
 - Replace all occurances of `boss.kapilkumaria.com` with your Domain `<your-domain>`
 
-
-# Include Snaphot of Domain_Update here
+![domain](images/domain_update.png)
 
 ### Step 13: Add GitHub Secrets
  
@@ -319,7 +316,7 @@ vi docker-compose.monitoring.yaml
 
 
 # Include Snaphot of repo_secrets here
-![diagram](images/diagram.png)
+![secrets](images/repo_secrets.png)
 
 
 ### Step 14: Git Push/Commit to `infra_features` Branch
@@ -336,9 +333,7 @@ Push to infra_features:
 
 ### Step 15: PR to `infra_main` from `infra_features`
 
-# Include Snaphot of PR here
-![diagram](images/diagram.png)
-
+![pr_to_infra_main](images/PR-to-infra_main.png)
 
 - **PR to `infra_main`:**  
   - Trigger `terraform plan`, output the plan as a comment in the PR, including cost estimation (e.g., using InfraCost).  
@@ -381,12 +376,16 @@ git push origin integration
   - Push images to a public Docker Hub repository.  
   - Update `docker-compose.yml` with the new image tags and commit the changes.  
 
-### Step 21: Merge from `integration` to `deployment`
+### Step 21: PR to `deployment` from `integration`
+
+![pr_to_deployment](images/PR-to-deployment.png)
+
+### Step 22: Merge from `integration` to `deployment`
 
 - **Merge from `integration` to `deployment`:**  
   - Deploy the application stack to the provisioned infrastructure.  
 
-### Step 22: Test Your Application and Verify the Deployment
+### Step 23: Test Your Application and Verify the Deployment
 
 Verify the following components to ensure the deployment was successful:
 1. **Application Accessibility**: 
