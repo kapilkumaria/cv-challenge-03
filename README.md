@@ -363,7 +363,12 @@ ls
 
 - Store the acme.json (Certificate) in letsencrypt folder e.g `cv-challenge-03-test/traefik/letsencrypt/acme.json` 
 
-### Step 19: Git Push/Commit to `integration` Branch
+
+### Step 19: Update `TARGET_SERVER_HOST` in GitHub Secrets
+- Update `TARGET_SERVER_HOST` with the latest Public IP of target server
+
+
+### Step 20: Git Push/Commit to `integration` Branch
 ```
 git status
 git add .
@@ -376,12 +381,12 @@ git push origin integration
   - Push images to a public Docker Hub repository.  
   - Update `docker-compose.yml` with the new image tags and commit the changes.  
 
-### Step 20: Merge from `integration` to `deployment`
+### Step 21: Merge from `integration` to `deployment`
 
 - **Merge from `integration` to `deployment`:**  
   - Deploy the application stack to the provisioned infrastructure.  
 
-### Step 21: Test Your Application and Verify the Deployment
+### Step 22: Test Your Application and Verify the Deployment
 
 Verify the following components to ensure the deployment was successful:
 1. **Application Accessibility**: 
